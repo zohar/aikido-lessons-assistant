@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carnet de séances</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpolygon points='7,1.5 12.8,12.5 1.2,12.5' fill='%2327407a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div id="tip" role="tooltip" hidden></div>
+
+<div class="wrap">
+  <div class="bar">
+    <a class="brand" href="#">
+      <svg width="18" height="18" viewBox="0 0 14 14" aria-hidden="true"><polygon points="7,1.5 12.8,12.5 1.2,12.5" style="fill:var(--p1)"/></svg>
+      Carnet de séances
+    </a>
+    <div class="actions" id="topActions" hidden>
+      <a class="btn" href="#">Mes séances</a>
+      <a class="btn primary" href="#nouvelle">Nouvelle séance</a>
+    </div>
+  </div>
+
+  <!-- Access code -->
+  <section class="view card narrow" id="view-acces" hidden aria-labelledby="t-acces">
+    <h2 id="t-acces">Accès</h2>
+    <p class="status">Entrez le code d'accès communiqué par le club. Il reste enregistré sur cet appareil.</p>
+    <form id="formAcces" class="form">
+      <label for="code">Code d'accès</label>
+      <input id="code" name="code" type="password" autocomplete="current-password" required>
+      <label for="auteur">Votre prénom <span class="opt">(facultatif, affiché sur vos séances)</span></label>
+      <input id="auteur" name="auteur" type="text" autocomplete="given-name" maxlength="80">
+      <div class="form-row"><button class="btn primary" type="submit">Entrer</button><span class="err" id="accesErr" role="alert"></span></div>
+    </form>
+  </section>
+
+  <!-- List -->
+  <section class="view" id="view-liste" hidden aria-labelledby="t-liste">
+    <div class="list-head">
+      <h1 id="t-liste">Mes séances</h1>
+      <a class="btn primary" href="#nouvelle">Nouvelle séance</a>
+    </div>
+    <p class="status" id="listeStatus">Chargement…</p>
+    <ul class="lessons" id="lessons"></ul>
+  </section>
+
+  <!-- New lesson -->
+  <section class="view card narrow" id="view-nouvelle" hidden aria-labelledby="t-nouvelle">
+    <h2 id="t-nouvelle">Nouvelle séance</h2>
+    <p class="status">Partez d'un principe, d'une technique ou d'un concept. L'assistant rédige la séance, puis une relecture vérifie la cohérence des placements. Comptez 3 à 6 minutes.</p>
+    <form id="formNouvelle" class="form">
+      <label for="startingPoint">Point de départ</label>
+      <input id="startingPoint" name="startingPoint" list="dl-depart" required maxlength="300" placeholder="ex. Irimi, Katate Dori Shihonage, le déséquilibre">
+      <datalist id="dl-depart"></datalist>
+      <label for="public">Public <span class="opt">(grades ou niveaux)</span></label>
+      <input id="public" name="public" list="dl-public" required maxlength="200" placeholder="ex. 4e à 1er kyu, adultes">
+      <datalist id="dl-public">
+        <option value="Débutants, 6e kyu, adultes"></option>
+        <option value="6e à 4e kyu, adultes"></option>
+        <option value="4e à 1er kyu, adultes"></option>
+        <option value="2e à 1er kyu, adultes (préparation 1er Dan)"></option>
+        <option value="1er à 2e Dan"></option>
+        <option value="Enfants 6-8 ans, 6e et 5e kyu"></option>
+        <option value="Enfants 8-12 ans, 6e à 4e kyu"></option>
+        <option value="Adolescents 12-15 ans, 5e à 3e kyu"></option>
+      </datalist>
+      <label for="duree">Durée <span class="opt">(minutes)</span></label>
+      <input id="duree" name="duree" type="number" min="15" max="120" step="5" value="30" required>
+      <label for="notes">Précisions <span class="opt">(facultatif)</span></label>
+      <textarea id="notes" name="notes" rows="3" maxlength="1500" placeholder="ex. préparation BF, tirage au sort ; insister sur Ushirowaza ; pas d'armes"></textarea>
+      <div class="form-row"><button class="btn primary" type="submit" id="btnGenerer">Rédiger la séance</button><span class="err" id="nouvelleErr" role="alert"></span></div>
+    </form>
+  </section>
+
+  <!-- One lesson -->
+  <section class="view" id="view-seance" hidden>
+    <div class="progress card" id="progress" hidden aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
+      <div>
+        <h2 id="progressTitle">Rédaction de la séance</h2>
+        <p class="status" id="progressText">L'assistant rédige la séance.</p>
+        <ol class="stages" id="stages">
+          <li data-stage="write">Rédaction</li>
+          <li data-stage="review">Vérification spatiale</li>
+          <li data-stage="ready">Prête</li>
+        </ol>
+      </div>
+    </div>
+    <div class="card error-card" id="errorCard" hidden>
+      <h2>La séance n'a pas pu être rédigée</h2>
+      <p id="errorText" class="status"></p>
+      <div class="form-row"><button class="btn primary" id="btnRelancer">Relancer avec la même demande</button></div>
+    </div>
+    <div id="lesson" class="jp-scan lesson"></div>
+    <section class="card modify" id="modifyCard" hidden aria-labelledby="t-modifier">
+      <h2 id="t-modifier">Modifier la séance</h2>
+      <p class="status">Décrivez le changement : l'assistant ne modifie que ce qui est demandé et refait la vérification.</p>
+      <form id="formModifier" class="form">
+        <label for="message" class="sr-only">Modification demandée</label>
+        <textarea id="message" rows="3" maxlength="1500" required placeholder="ex. remplace la situation 2 par un travail en Suwariwaza ; adapte pour des enfants de 10 ans"></textarea>
+        <div class="form-row">
+          <button class="btn primary" type="submit">Modifier</button>
+          <span class="err" id="modifierErr" role="alert"></span>
+        </div>
+      </form>
+      <div class="form-row secondary-actions">
+        <button class="btn" type="button" id="btnImprimer">Imprimer</button>
+        <button class="btn" type="button" id="btnCopier">Copier le JSON</button>
+        <button class="btn quiet danger" type="button" id="btnSupprimer">Supprimer la séance</button>
+      </div>
+    </section>
+  </section>
+</div>
+
+<script src="carnet.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
