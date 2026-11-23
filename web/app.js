@@ -58,7 +58,7 @@ const isBusy = st => st === "generating" || st === "reviewing";
 
 /* ---------- views ---------- */
 const $ = id => document.getElementById(id);
-const VIEWS = ["acces", "liste", "nouvelle", "seance"];
+const VIEWS = ["acces", "liste", "nouvelle", "seance", "glossaire"];
 function show(view){
   VIEWS.forEach(v => { $("view-" + v).hidden = v !== view; });
   $("topActions").hidden = view === "acces";
@@ -75,6 +75,7 @@ function stopPolling(){ pollToken++; clearTimeout(pollTimer); clearInterval(cloc
 async function route(){
   stopPolling();
   const h = location.hash.replace(/^#/, "");
+  if (h === "glossaire") return showGlossary();          // static: no access code needed
   if (!store.get(LS_CODE) && h !== "acces"){ location.hash = "#acces"; return; }
   if (h === "acces") return showAccess();
   if (h === "nouvelle") return showNew();
@@ -343,6 +344,65 @@ function interrupted(){
     ? "La modification n'a pas abouti (aucune nouvelle depuis plus de 30 minutes). Voici la version précédente ; vous pouvez redemander la modification."
     : "La rédaction semble interrompue : aucune nouvelle depuis plus de 30 minutes. Relancez la demande." });
 }
+
+/* ---------- glossary ---------- */
+// Same terms as the hover explanations (G0 in carnet.js), grouped by category.
+// G0 is ordered by category; each key below opens a new category.
+const GLOSS_CATS = [
+  { key: "principe", label: "Principes" }, { key: "pratique", label: "Pratique" }, { key: "forme", label: "Formes de travail" },
+  { key: "attaque", label: "Attaques" }, { key: "technique", label: "Techniques" }, { key: "grade", label: "Grades" }
+];
+const GLOSS_STARTS = { "Shisei": "principe", "Tori": "pratique", "Suwariwaza": "forme", "Kihon": "pratique", "Katate Dori": "attaque", "Ikkyo": "technique", "Kyu": "grade" };
+let glossCat = "", glossBuilt = false;
+const glossEntries = (() => {
+  const aliases = {};
+  Object.entries(ALIAS).forEach(([a, k]) => { if (a !== k) (aliases[k] = aliases[k] || []).push(a); });
+  let cat = "principe";
+  return Object.entries(G0).map(([term, [kanji, romaji, def]]) => {
+    if (GLOSS_STARTS[term]) cat = GLOSS_STARTS[term];
+    return { term, kanji, romaji, def, cat, search: norm([term, romaji, def, ...(aliases[term] || [])].join(" ")) };
+  });
+})();
+
+function buildGlossaryPage(){
+  const byCat = c => glossEntries.filter(e => e.cat === c).sort((a, b) => a.term.localeCompare(b.term, "fr", { sensitivity: "base" }));
+  $("glossCats").innerHTML = `<button type="button" class="gcat on" data-cat="" aria-pressed="true">Tous <span>${glossEntries.length}</span></button>`
+    + GLOSS_CATS.map(c => `<button type="button" class="gcat" data-cat="${c.key}" data-key="${c.key}" aria-pressed="false">${c.label} <span>${byCat(c.key).length}</span></button>`).join("");
+  $("gloss").innerHTML = GLOSS_CATS.map(c => `<section class="gl-sec" data-key="${c.key}" aria-labelledby="gl-${c.key}">
+    <h2 id="gl-${c.key}">${c.label}</h2>
+    <ul class="gl-list">${byCat(c.key).map(e => `<li class="gl" data-s="${esc(e.search)}">
+      <div class="gl-head"><span class="gl-term">${esc(e.term)}</span><span class="gl-kanji" lang="ja">${esc(e.kanji)}</span></div>
+      <p class="gl-def"><span class="gl-romaji">${esc(e.romaji)}</span>${esc(e.def)}</p>
+    </li>`).join("")}</ul>
+  </section>`).join("");
+  glossBuilt = true;
+}
+function filterGlossary(){
+  const q = norm($("glossQ").value);
+  let n = 0;
+  document.querySelectorAll(".gl-sec").forEach(sec => {
+    let k = 0;
+    const inCat = !glossCat || sec.dataset.key === glossCat;
+    sec.querySelectorAll(".gl").forEach(li => { const on = inCat && (!q || li.dataset.s.includes(q)); li.hidden = !on; if (on) k++; });
+    sec.hidden = k === 0; n += k;
+  });
+  $("glossEmpty").hidden = n > 0;
+  $("glossCount").textContent = `${n} terme${n > 1 ? "s" : ""}`;
+}
+function showGlossary(){
+  document.title = "Glossaire · Carnet de séances";
+  if (!glossBuilt) buildGlossaryPage();
+  show("glossaire");
+  $("topActions").hidden = false;
+  filterGlossary();
+}
+$("glossQ").addEventListener("input", filterGlossary);
+$("glossCats").addEventListener("click", e => {
+  const b = e.target.closest(".gcat"); if (!b) return;
+  glossCat = b.dataset.cat;
+  document.querySelectorAll(".gcat").forEach(x => { const on = x === b; x.classList.toggle("on", on); x.setAttribute("aria-pressed", on); });
+  filterGlossary();
+});
 
 $("formModifier").addEventListener("submit", async e => {
   e.preventDefault();

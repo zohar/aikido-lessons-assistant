@@ -44,7 +44,7 @@ paused while the tab is hidden, and calls n8n « get » only once more, when the
 
 ### 3. First use
 
-Open the site, enter the access code and your first name, then « Nouvelle séance »: describe the lesson in the text box or click the tokens (principe, technique, attaque, public, durée…). Defaults: 5e à 1er kyu, adultes, 30 minutes. A lesson takes about 4 to 8 minutes; there is no need to stay on the page, it appears in « Mes séances » when ready.
+Open the site, enter the access code (the « Glossaire » page, with every term and a one-line explanation, works without it) and your first name, then « Nouvelle séance »: describe the lesson in the text box or click the tokens (principe, technique, attaque, public, durée…). Defaults: 5e à 1er kyu, adultes, 30 minutes. A lesson takes about 4 to 8 minutes; there is no need to stay on the page, it appears in « Mes séances » when ready.
 
 ## Notes
 

@@ -8,8 +8,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpolygon points='7,1.5 12.8,12.5 1.2,12.5' fill='%2327407a'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="styles.css?v=20261123d">
-<link rel="stylesheet" href="app.css?v=20261123d">
+<link rel="stylesheet" href="styles.css?v=20261123e">
+<link rel="stylesheet" href="app.css?v=20261123e">
 </head>
 <body>
 <div id="tip" role="tooltip" hidden></div>
@@ -22,6 +22,7 @@
     </a>
     <div class="actions" id="topActions" hidden>
       <a class="btn" href="#">Mes séances</a>
+      <a class="btn" href="#glossaire">Glossaire</a>
       <a class="btn primary" href="#nouvelle">Nouvelle séance</a>
     </div>
   </div>
@@ -60,6 +61,21 @@
       <div class="form-row"><button class="btn primary" type="submit" id="btnGenerer">Rédiger la séance</button><span class="hint">Ctrl + Entrée pour envoyer</span><span class="err" id="nouvelleErr" role="alert"></span></div>
       <div class="token-groups" id="tokens"></div>
     </form>
+  </section>
+
+  <!-- Glossary -->
+  <section class="view" id="view-glossaire" hidden aria-labelledby="t-glossaire">
+    <div class="list-head">
+      <h1 id="t-glossaire">Glossaire</h1>
+      <span class="status" id="glossCount" aria-live="polite"></span>
+    </div>
+    <div class="gloss-tools">
+      <label for="glossQ" class="sr-only">Rechercher un terme</label>
+      <input id="glossQ" type="search" placeholder="Rechercher : Irimi, poignet, distance…" autocomplete="off">
+      <div class="gloss-cats" id="glossCats" role="group" aria-label="Catégories"></div>
+    </div>
+    <div id="gloss"></div>
+    <p class="status" id="glossEmpty" hidden>Aucun terme ne correspond à cette recherche.</p>
   </section>
 
   <!-- One lesson -->
@@ -104,7 +120,7 @@
   </section>
 </div>
 
-<script src="carnet.js?v=20261123d"></script>
-<script src="app.js?v=20261123d"></script>
+<script src="carnet.js?v=20261123e"></script>
+<script src="app.js?v=20261123e"></script>
 </body>
 </html>
