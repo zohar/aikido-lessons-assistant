@@ -10,6 +10,7 @@ Browser ──POST /api/carnet-seances──▶ nginx (this container, Coolify)
                                          ▼
                          n8n workflow « Carnet de séances – API »
                          ├─ list / get / delete ──▶ Supabase aikido_seances
+                         ├─ import: checks a lesson JSON, saves it as ready
                          └─ generate / revise (async)
                               1. answers at once with the lesson id
                               2. Opus 5.5 writes the lesson JSON (OpenRouter)
@@ -22,7 +23,7 @@ paused while the tab is hidden, and calls n8n « get » only once more, when the
 
 - `web/`: the app (static HTML/CSS/JS, no build step). `carnet.js` holds the lesson rendering and glossary; `app.js` the screens.
 - `deploy/`: nginx config template; `Dockerfile`: the container Coolify builds.
-- `n8n/`: sources of the n8n workflow (prompts, validation code, generator). The live copy is in n8n; edit the prompts in the n8n node « Consignes de l'assistant ».
+- `n8n/`: sources of the n8n workflow (prompts, validation code incl. `valider-import.js`, generator). The live copy is in n8n; edit the prompts in the n8n node « Consignes de l'assistant ».
 - `supabase/`: the table and the status function (both already applied).
 
 ## Setup
@@ -53,5 +54,6 @@ Open the site, enter the access code (the « Glossaire » page, with every term 
 - The access code is checked by n8n, not by the page. To change it, edit the credential value; everyone then re-enters the new code once.
 - nginx forwards only `/api/carnet-seances`; no other n8n webhook is reachable through this site.
 - The automatic review notes are stored in `data.relecture` in Supabase for control; they are not shown in the app.
+- « Importer » (on « Mes séances ») adds a lesson from its JSON: pasted (a block from the Claude Project, with or without the ``` fences) or a .json file. n8n checks it with the same rules as generated lessons; it is not re-reviewed by Sonnet. « Copier le JSON » on a lesson gives the same format back.
 - Each revision keeps the previous version in `versions` (last 10), not yet shown in the app.
 - Placements are checked twice by the models, but stay a proposal: they must be validated on the mat by a teacher.

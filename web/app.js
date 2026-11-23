@@ -58,7 +58,7 @@ const isBusy = st => st === "generating" || st === "reviewing";
 
 /* ---------- views ---------- */
 const $ = id => document.getElementById(id);
-const VIEWS = ["acces", "liste", "nouvelle", "seance", "glossaire"];
+const VIEWS = ["acces", "liste", "nouvelle", "seance", "glossaire", "importer"];
 function show(view){
   VIEWS.forEach(v => { $("view-" + v).hidden = v !== view; });
   $("topActions").hidden = view === "acces";
@@ -79,6 +79,7 @@ async function route(){
   if (!store.get(LS_CODE) && h !== "acces"){ location.hash = "#acces"; return; }
   if (h === "acces") return showAccess();
   if (h === "nouvelle") return showNew();
+  if (h === "importer") return showImport();
   if (h.startsWith("seance/")) return showLesson(h.slice(7));
   return showList();
 }
@@ -344,6 +345,70 @@ function interrupted(){
     ? "La modification n'a pas abouti (aucune nouvelle depuis plus de 30 minutes). Voici la version précédente ; vous pouvez redemander la modification."
     : "La rédaction semble interrompue : aucune nouvelle depuis plus de 30 minutes. Relancez la demande." });
 }
+
+/* ---------- import ---------- */
+// Paste or drop a lesson JSON; it is checked here for quick feedback, then by n8n
+// (same rules as generated lessons) before being saved as ready.
+const IMPORT_MAX = 200000;
+const importText = $("importText");
+let imported = null;
+
+function showImport(){
+  document.title = "Importer une séance · Carnet de séances";
+  $("importErr").textContent = "";
+  show("importer");
+  checkImport();
+  importText.focus();
+}
+function checkImport(){
+  const text = importText.value.trim();
+  const out = $("importCheck"), warn = $("importWarn");
+  imported = null; warn.hidden = true; warn.innerHTML = "";
+  $("importErr").textContent = "";
+  if (!text){ out.hidden = true; $("btnImporter").disabled = true; return; }
+  out.hidden = false;
+  try {
+    if (text.length > IMPORT_MAX) throw new Error("Ce texte est trop long pour une séance (200 Ko au plus).");
+    const d = parseLesson(text);
+    const n = d.situations.length;
+    out.className = "import-check ok";
+    out.textContent = `Séance reconnue : ${d.theme}${d.public ? " · " + d.public : ""} · ${n} situation${n > 1 ? "s" : ""}${d.duree ? " · " + d.duree + " min" : ""}`;
+    const w = checks(d);
+    if (w.length){ warn.innerHTML = w.map(x => `<li>${esc(x)}</li>`).join(""); warn.hidden = false; }
+    imported = d;
+  } catch (e){
+    out.className = "import-check bad";
+    out.textContent = e.message;
+  }
+  $("btnImporter").disabled = !imported;
+}
+function readImportFile(file){
+  if (!file) return;
+  if (file.size > IMPORT_MAX){ $("importErr").textContent = "Ce fichier est trop volumineux pour une séance (200 Ko au plus)."; return; }
+  const r = new FileReader();
+  r.onload = () => { importText.value = String(r.result || ""); checkImport(); };
+  r.onerror = () => { $("importErr").textContent = "Impossible de lire ce fichier."; };
+  r.readAsText(file);
+}
+importText.addEventListener("input", checkImport);
+$("importFile").addEventListener("change", e => { readImportFile(e.target.files[0]); e.target.value = ""; });
+importText.addEventListener("dragover", e => { if ([...e.dataTransfer.types].includes("Files")){ e.preventDefault(); importText.classList.add("drop"); } });
+importText.addEventListener("dragleave", () => importText.classList.remove("drop"));
+importText.addEventListener("drop", e => {
+  importText.classList.remove("drop");
+  const f = e.dataTransfer.files && e.dataTransfer.files[0];
+  if (f){ e.preventDefault(); readImportFile(f); }
+});
+$("formImporter").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (!imported) return;
+  const btn = $("btnImporter"); btn.disabled = true; $("importErr").textContent = "";
+  try {
+    const r = await api("import", { lesson: imported, author: store.get(LS_AUTHOR) || "" });
+    importText.value = ""; imported = null;
+    location.hash = "#seance/" + r.id;
+  } catch (err){ fail(err, $("importErr")); btn.disabled = false; }
+});
 
 /* ---------- glossary ---------- */
 // Same terms as the hover explanations (G0 in carnet.js), grouped by category.

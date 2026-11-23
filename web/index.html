@@ -8,8 +8,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpolygon points='7,1.5 12.8,12.5 1.2,12.5' fill='%2327407a'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="styles.css?v=20261123e">
-<link rel="stylesheet" href="app.css?v=20261123e">
+<link rel="stylesheet" href="styles.css?v=20261123f">
+<link rel="stylesheet" href="app.css?v=20261123f">
 </head>
 <body>
 <div id="tip" role="tooltip" hidden></div>
@@ -44,7 +44,10 @@
   <section class="view" id="view-liste" hidden aria-labelledby="t-liste">
     <div class="list-head">
       <h1 id="t-liste">Mes séances</h1>
-      <a class="btn primary" href="#nouvelle">Nouvelle séance</a>
+      <div class="list-actions">
+        <a class="btn" href="#importer">Importer</a>
+        <a class="btn primary" href="#nouvelle">Nouvelle séance</a>
+      </div>
     </div>
     <p class="status" id="listeStatus">Chargement…</p>
     <ul class="lessons" id="lessons"></ul>
@@ -60,6 +63,23 @@
       <p class="defaults" id="defaults" aria-live="polite"></p>
       <div class="form-row"><button class="btn primary" type="submit" id="btnGenerer">Rédiger la séance</button><span class="hint">Ctrl + Entrée pour envoyer</span><span class="err" id="nouvelleErr" role="alert"></span></div>
       <div class="token-groups" id="tokens"></div>
+    </form>
+  </section>
+
+  <!-- Import -->
+  <section class="view card narrow" id="view-importer" hidden aria-labelledby="t-importer">
+    <h2 id="t-importer">Importer une séance</h2>
+    <p class="status">Collez le bloc JSON d'une séance (par exemple celui que propose l'assistant dans le projet Claude, ou un JSON copié avec « Copier le JSON »), ou choisissez un fichier .json. La séance est vérifiée avec les mêmes règles que les séances rédigées ici, puis ajoutée à « Mes séances ».</p>
+    <form id="formImporter" class="form">
+      <label for="importText" class="sr-only">JSON de la séance</label>
+      <textarea id="importText" rows="12" spellcheck="false" autocomplete="off" placeholder='{ "format": "seance-aikido/1", "theme": "Irimi", "public": "5e à 1er kyu, adultes", … }'></textarea>
+      <div class="form-row">
+        <label class="btn file-btn"><input type="file" id="importFile" accept=".json,application/json,text/plain" class="sr-only">Choisir un fichier…</label>
+        <span class="hint">ou déposez le fichier dans la zone ci-dessus</span>
+      </div>
+      <p class="import-check" id="importCheck" aria-live="polite" hidden></p>
+      <ul class="import-warn" id="importWarn" hidden></ul>
+      <div class="form-row"><button class="btn primary" type="submit" id="btnImporter" disabled>Importer la séance</button><span class="err" id="importErr" role="alert"></span></div>
     </form>
   </section>
 
@@ -120,7 +140,7 @@
   </section>
 </div>
 
-<script src="carnet.js?v=20261123e"></script>
-<script src="app.js?v=20261123e"></script>
+<script src="carnet.js?v=20261123f"></script>
+<script src="app.js?v=20261123f"></script>
 </body>
 </html>

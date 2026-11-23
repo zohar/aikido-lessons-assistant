@@ -59,6 +59,17 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
 :root[data-theme="dark"]{--g-principe:#bba0ea;--g-technique:#5ec6ba;--g-attaque:#ef9581;--g-forme:#d4c362;--g-concept:#93b4e4;--g-public:#e991bd;--g-duree:#aab3c1;--g-cadre:#d9a874}
 @media (max-width:560px){.token-group{grid-template-columns:1fr}.token-label{padding-top:0}}
 
+/* import */
+.list-actions{display:flex;flex-wrap:wrap;gap:8px}
+#importText{font-family:var(--f-mono, ui-monospace, monospace);font-size:12.5px;line-height:1.5;min-height:220px;white-space:pre;overflow-wrap:normal;overflow-x:auto}
+#importText.drop{outline:2px dashed var(--accent);outline-offset:2px;background:var(--p1-soft)}
+.form label.file-btn{font-weight:600;font-size:14px;margin-top:0;cursor:pointer}
+.file-btn:focus-within{outline:2px solid var(--accent);outline-offset:1px}
+.import-check{margin:4px 0 0;font-size:14px;padding:8px 11px;border-radius:6px;line-height:1.4}
+.import-check.ok{background:var(--p3-soft);color:var(--p3)}
+.import-check.bad{background:var(--p2-soft);color:var(--warn)}
+.import-warn{margin:0;padding:0 0 0 20px;font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:2px}
+
 /* glossary */
 .gloss-tools{display:flex;flex-direction:column;gap:10px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:10px 0;margin-top:-10px;border-bottom:1px solid var(--line)}
 #glossQ{font:inherit;font-size:15px;padding:9px 12px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--fg);width:100%;max-width:440px;box-sizing:border-box}
