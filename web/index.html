@@ -8,8 +8,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpolygon points='7,1.5 12.8,12.5 1.2,12.5' fill='%2327407a'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="styles.css?v=20261123f">
-<link rel="stylesheet" href="app.css?v=20261123f">
+<link rel="stylesheet" href="styles.css?v=20261123g">
+<link rel="stylesheet" href="app.css?v=20261123g">
 </head>
 <body>
 <div id="tip" role="tooltip" hidden></div>
@@ -55,7 +55,10 @@
 
   <!-- New lesson -->
   <section class="view card narrow" id="view-nouvelle" hidden aria-labelledby="t-nouvelle">
-    <h2 id="t-nouvelle">Nouvelle séance</h2>
+    <div class="card-head">
+      <h2 id="t-nouvelle">Nouvelle séance</h2>
+      <a class="btn" href="#importer">Importer un JSON</a>
+    </div>
     <p class="status">Décrivez la séance comme dans un message, ou cliquez sur les éléments ci-dessous pour les ajouter. Sans précision, la séance est pour 5e à 1er kyu, adultes, et dure 30 minutes. Comptez 4 à 8 minutes de rédaction ; inutile de rester sur la page.</p>
     <form id="formNouvelle" class="form">
       <label for="demande" class="sr-only">Votre demande</label>
@@ -68,7 +71,10 @@
 
   <!-- Import -->
   <section class="view card narrow" id="view-importer" hidden aria-labelledby="t-importer">
-    <h2 id="t-importer">Importer une séance</h2>
+    <div class="card-head">
+      <h2 id="t-importer">Importer une séance</h2>
+      <a class="btn" href="#nouvelle">Rédiger plutôt</a>
+    </div>
     <p class="status">Collez le bloc JSON d'une séance (par exemple celui que propose l'assistant dans le projet Claude, ou un JSON copié avec « Copier le JSON »), ou choisissez un fichier .json. La séance est vérifiée avec les mêmes règles que les séances rédigées ici, puis ajoutée à « Mes séances ».</p>
     <form id="formImporter" class="form">
       <label for="importText" class="sr-only">JSON de la séance</label>
@@ -140,7 +146,7 @@
   </section>
 </div>
 
-<script src="carnet.js?v=20261123f"></script>
-<script src="app.js?v=20261123f"></script>
+<script src="carnet.js?v=20261123g"></script>
+<script src="app.js?v=20261123g"></script>
 </body>
 </html>
