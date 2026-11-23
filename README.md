@@ -43,11 +43,12 @@ Browser polls « get » every 4 s and shows the progress.
 
 ### 3. First use
 
-Open the site, enter the access code and your first name, then « Nouvelle séance ». A lesson takes about 3 to 6 minutes; you can leave the page and come back.
+Open the site, enter the access code and your first name, then « Nouvelle séance »: describe the lesson in the text box or click the tokens (principe, technique, attaque, public, durée…). Defaults: 5e à 1er kyu, adultes, 30 minutes. A lesson takes about 3 to 8 minutes; you can leave the page and come back.
 
 ## Notes
 
 - The access code is checked by n8n, not by the page. To change it, edit the credential value; everyone then re-enters the new code once.
 - nginx forwards only `/api/carnet-seances`; no other n8n webhook is reachable through this site.
+- The automatic review notes are stored in `data.relecture` in Supabase for control; they are not shown in the app.
 - Each revision keeps the previous version in `versions` (last 10), not yet shown in the app.
 - Placements are checked twice by the models, but stay a proposal: they must be validated on the mat by a teacher.

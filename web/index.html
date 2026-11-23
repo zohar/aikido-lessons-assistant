@@ -52,28 +52,13 @@
   <!-- New lesson -->
   <section class="view card narrow" id="view-nouvelle" hidden aria-labelledby="t-nouvelle">
     <h2 id="t-nouvelle">Nouvelle séance</h2>
-    <p class="status">Partez d'un principe, d'une technique ou d'un concept. L'assistant rédige la séance, puis une relecture vérifie la cohérence des placements. Comptez 3 à 6 minutes.</p>
+    <p class="status">Décrivez la séance comme dans un message, ou cliquez sur les éléments ci-dessous pour les ajouter. Sans précision, la séance est pour 5e à 1er kyu, adultes, et dure 30 minutes. Comptez 3 à 6 minutes de rédaction.</p>
     <form id="formNouvelle" class="form">
-      <label for="startingPoint">Point de départ</label>
-      <input id="startingPoint" name="startingPoint" list="dl-depart" required maxlength="300" placeholder="ex. Irimi, Katate Dori Shihonage, le déséquilibre">
-      <datalist id="dl-depart"></datalist>
-      <label for="public">Public <span class="opt">(grades ou niveaux)</span></label>
-      <input id="public" name="public" list="dl-public" required maxlength="200" placeholder="ex. 4e à 1er kyu, adultes">
-      <datalist id="dl-public">
-        <option value="Débutants, 6e kyu, adultes"></option>
-        <option value="6e à 4e kyu, adultes"></option>
-        <option value="4e à 1er kyu, adultes"></option>
-        <option value="2e à 1er kyu, adultes (préparation 1er Dan)"></option>
-        <option value="1er à 2e Dan"></option>
-        <option value="Enfants 6-8 ans, 6e et 5e kyu"></option>
-        <option value="Enfants 8-12 ans, 6e à 4e kyu"></option>
-        <option value="Adolescents 12-15 ans, 5e à 3e kyu"></option>
-      </datalist>
-      <label for="duree">Durée <span class="opt">(minutes)</span></label>
-      <input id="duree" name="duree" type="number" min="15" max="120" step="5" value="30" required>
-      <label for="notes">Précisions <span class="opt">(facultatif)</span></label>
-      <textarea id="notes" name="notes" rows="3" maxlength="1500" placeholder="ex. préparation BF, tirage au sort ; insister sur Ushirowaza ; pas d'armes"></textarea>
-      <div class="form-row"><button class="btn primary" type="submit" id="btnGenerer">Rédiger la séance</button><span class="err" id="nouvelleErr" role="alert"></span></div>
+      <label for="demande" class="sr-only">Votre demande</label>
+      <textarea id="demande" rows="5" maxlength="1500" required placeholder="ex. principe : Irimi&#10;attaque : Shomen Uchi&#10;préparation BF, insister sur le timing"></textarea>
+      <p class="defaults" id="defaults" aria-live="polite"></p>
+      <div class="form-row"><button class="btn primary" type="submit" id="btnGenerer">Rédiger la séance</button><span class="hint">Ctrl + Entrée pour envoyer</span><span class="err" id="nouvelleErr" role="alert"></span></div>
+      <div class="token-groups" id="tokens"></div>
     </form>
   </section>
 

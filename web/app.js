@@ -105,30 +105,95 @@ async function showList(){
 }
 
 /* ---------- new lesson ---------- */
-const DEPARTS = ["Irimi", "Tenkan", "Maaï", "Shiseï", "Kamae", "Zanshin", "Kokyu", "Metsuke", "Atemi", "Taï Sabaki", "Omote et Ura", "Kimusubi",
-  "le déséquilibre", "la connexion", "le placement", "la vigilance", "la sécurité et les chutes",
-  "Ikkyo", "Nikyo", "Sankyo", "Shihonage", "Iriminage", "Kotegaeshi", "Kaitennage", "Tenchinage", "Koshinage", "Kokyunage",
-  "Katate Dori", "Shomen Uchi", "Yokomen Uchi", "Chudan Tsuki", "Ushiro Ryote Dori", "Suwariwaza", "Hanmihandachiwaza", "Ushirowaza", "Tanto Dori"];
-$("dl-depart").innerHTML = DEPARTS.map(d => `<option value="${esc(d)}"></option>`).join("");
+const DEFAULT_PUBLIC = "5e à 1er kyu, adultes";
+const DEFAULT_DUREE = 30;
+// Each group inserts "label : value" lines. "single" groups replace their existing line.
+const TOKENS = [
+  { label: "principe", values: ["Irimi", "Tenkan", "Maaï", "Shiseï", "Kamae", "Zanshin", "Kokyu", "Metsuke", "Atemi", "Taï Sabaki", "Omote et Ura", "Kimusubi", "Sen no Sen"] },
+  { label: "technique", values: ["Ikkyo", "Nikyo", "Sankyo", "Yonkyo", "Gokyo", "Iriminage", "Shihonage", "Kotegaeshi", "Kaitennage", "Tenchinage", "Koshinage", "Udekimenage", "Jujigarami", "Sumiotoshi", "Kokyunage", "Kokyuho", "Ushiro Kiriotoshi", "Hijikimeosae"] },
+  { label: "attaque", values: ["Katate Dori", "Aï-hanmi Katate Dori", "Ryote Dori", "Katate Ryote Dori", "Kata Dori", "Muna Dori", "Ryokata Dori", "Shomen Uchi", "Yokomen Uchi", "Kata Dori Men Uchi", "Chudan Tsuki", "Jodan Tsuki", "Ushiro Ryote Dori", "Ushiro Ryokata Dori", "Ushiro Eri Dori", "Ushiro Katate Dori Kubishime"] },
+  { label: "forme", values: ["Suwariwaza", "Hanmihandachiwaza", "Tachiwaza", "Ushirowaza", "Tanto Dori", "Jo Dori", "Tachi Dori", "Randori"] },
+  { label: "concept", values: ["le déséquilibre", "la connexion", "le placement", "la distance", "la vigilance", "la sécurité et les chutes"] },
+  { label: "public", single: true, values: ["débutants, 6e kyu, adultes", "6e à 4e kyu, adultes", "5e à 1er kyu, adultes", "2e à 1er kyu, préparation 1er Dan", "1er Dan", "2e Dan et plus", "enfants 6-8 ans", "enfants 8-12 ans", "adolescents 12-15 ans"] },
+  { label: "durée", single: true, values: ["30 min", "45 min", "60 min", "90 min"] },
+  { label: "cadre", single: true, values: ["cours ordinaire", "préparation BF"] }
+];
+const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+const lineKey = line => { const m = line.match(/^\s*([^:\n]{2,20}?)\s*:/); return m ? norm(m[1]) : null; };
+const demande = $("demande");
+
+$("tokens").innerHTML = TOKENS.map((g, i) => `<div class="token-group"><span>${esc(g.label)}</span><div class="tokens">${
+  g.values.map(v => `<button type="button" class="token" data-g="${i}" data-v="${esc(v)}">${esc(v)}</button>`).join("")
+}</div></div>`).join("");
+
+function addToken(group, value){
+  const line = `${group.label} : ${value}`;
+  const lines = demande.value.split("\n");
+  if (group.single){
+    const k = norm(group.label);
+    const at = lines.findIndex(l => lineKey(l) === k);
+    if (at >= 0){ lines[at] = line; demande.value = lines.join("\n"); return; }
+  }
+  if (lines.some(l => norm(l) === norm(line))) return;
+  const text = demande.value.replace(/\s+$/, "");
+  demande.value = (text ? text + "\n" : "") + line;
+}
+$("tokens").addEventListener("click", e => {
+  const b = e.target.closest(".token"); if (!b) return;
+  addToken(TOKENS[+b.dataset.g], b.dataset.v);
+  demande.focus();
+  demande.setSelectionRange(demande.value.length, demande.value.length);
+  refreshDemande();
+});
+
+// Reads "public :" and "durée :" lines; everything else is the request itself.
+function parseDemande(text){
+  let pub = "", duree = 0;
+  const rest = [];
+  text.split("\n").map(l => l.trim()).filter(Boolean).forEach(l => {
+    const k = lineKey(l), v = l.slice(l.indexOf(":") + 1).trim();
+    if (k === "public" && v) pub = v;
+    else if (k === "duree" && v) duree = parseInt(v, 10) || 0;
+    else rest.push(l);
+  });
+  return { public: pub || DEFAULT_PUBLIC, duree: Math.min(Math.max(duree || DEFAULT_DUREE, 15), 120), demande: rest.join("\n"), pubSet: !!pub, dureeSet: !!duree };
+}
+function refreshDemande(){
+  const p = parseDemande(demande.value);
+  $("defaults").innerHTML = `Public : <b>${esc(p.public)}</b>${p.pubSet ? "" : " (par défaut)"} · Durée : <b>${p.duree} min</b>${p.dureeSet ? "" : " (par défaut)"}`;
+  const present = new Set(demande.value.split("\n").map(norm));
+  document.querySelectorAll(".token").forEach(b => {
+    const g = TOKENS[+b.dataset.g];
+    b.classList.toggle("on", present.has(norm(`${g.label} : ${b.dataset.v}`)));
+  });
+}
+demande.addEventListener("input", refreshDemande);
+demande.addEventListener("keydown", e => {
+  if (e.key === "Enter" && (e.ctrlKey || e.metaKey)){ e.preventDefault(); $("formNouvelle").requestSubmit(); }
+});
 
 function showNew(){
   document.title = "Nouvelle séance · Carnet de séances";
   $("nouvelleErr").textContent = "";
+  refreshDemande();
   show("nouvelle");
-  $("startingPoint").focus();
+  demande.focus();
 }
 $("formNouvelle").addEventListener("submit", async e => {
   e.preventDefault();
+  const p = parseDemande(demande.value);
+  if (!p.demande){ $("nouvelleErr").textContent = "Indiquez au moins un principe, une technique ou un concept."; return; }
   const btn = $("btnGenerer"); btn.disabled = true; $("nouvelleErr").textContent = "";
+  const oneLine = p.demande.split("\n").join(" ; ");
   try {
     const r = await api("generate", {
-      startingPoint: $("startingPoint").value.trim(),
-      public: $("public").value.trim(),
-      duree: Number($("duree").value) || 30,
-      notes: $("notes").value.trim(),
+      startingPoint: oneLine.slice(0, 300),
+      public: p.public,
+      duree: p.duree,
+      notes: oneLine.length > 300 ? p.demande : "",
       author: store.get(LS_AUTHOR) || ""
     });
-    $("formNouvelle").reset();
+    demande.value = "";
     location.hash = "#seance/" + r.id;
   } catch (err){ fail(err, $("nouvelleErr")); }
   finally { btn.disabled = false; }

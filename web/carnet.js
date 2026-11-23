@@ -231,7 +231,6 @@ function render(d, isExample){
       <div><h3>Observables</h3><ul>${(d.observables||[]).map(o=>`<li>${esc(o)}</li>`).join("")}</ul></div>
     </div>
   </header>
-  ${Array.isArray(d.relecture)&&d.relecture.length?`<div class="review"><b>Relecture automatique</b>${d.relecture.map(x=>`<span>${esc(x)}</span>`).join("")}</div>`:""}
   ${w.length?`<div class="warnings"><b>À vérifier dans cette séance</b>${w.map(x=>`<span>${esc(x)}</span>`).join("")}</div>`:""}
 
   <section class="structure" aria-labelledby="st">

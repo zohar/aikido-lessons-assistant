@@ -31,6 +31,22 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
 .pill.generating,.pill.reviewing{background:var(--p1-soft);color:var(--p1)}
 .pill.error{background:var(--p2-soft);color:var(--warn)}
 
+/* new lesson: chat-like request + tokens */
+#view-nouvelle.narrow{max-width:760px}
+#demande{font-size:15px;line-height:1.5;min-height:120px}
+.defaults{margin:0;font-size:13px;color:var(--muted)}
+.defaults b{color:var(--fg);font-weight:600}
+.hint{font-size:12px;color:var(--muted)}
+.token-groups{display:flex;flex-direction:column;gap:12px;margin-top:10px;border-top:1px solid var(--line);padding-top:14px}
+.token-group{display:grid;grid-template-columns:110px 1fr;gap:6px 10px;align-items:start}
+.token-group > span{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:5px}
+.tokens{display:flex;flex-wrap:wrap;gap:6px}
+.token{font:inherit;font-size:13px;padding:3px 10px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer}
+.token:hover{border-color:var(--accent);color:var(--accent)}
+.token:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.token.on{background:var(--p1-soft);border-color:var(--p1);color:var(--p1)}
+@media (max-width:560px){.token-group{grid-template-columns:1fr}.token-group > span{padding-top:0}}
+
 /* progress */
 .progress{display:flex;gap:18px;align-items:flex-start}
 .spinner{flex:none;width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:spin 1s linear infinite;margin-top:2px}
@@ -45,12 +61,10 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
 .error-card{border-color:var(--warn)}
 .lesson{display:flex;flex-direction:column;gap:36px}
 .lesson:empty{display:none}
-.review{border:1px solid var(--line);border-left:4px solid var(--p3);border-radius:8px;padding:10px 14px;font-size:13px;display:flex;flex-direction:column;gap:4px;background:var(--surface)}
-.review b{color:var(--p3)}
 .modify{display:flex;flex-direction:column;gap:6px}
 .secondary-actions{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}
 
 @media print{
-  .bar,.modify,.progress,.error-card,.review{display:none!important}
+  .bar,.modify,.progress,.error-card{display:none!important}
   body{background:#fff}
 }
