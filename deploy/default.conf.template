@@ -27,8 +27,8 @@ server {
     }
     location /api/ { return 404; }
 
-    # "expires" sets Cache-Control without dropping the server-level add_header lines.
+    # "expires -1" = Cache-Control: no-cache (revalidated each load), without dropping the add_header lines above.
     location = /index.html { expires -1; }
-    location ~* \.(css|js)$ { expires 5m; }
+    location ~* \.(css|js)$ { expires -1; }
     location / { try_files $uri $uri/ /index.html; }
 }
