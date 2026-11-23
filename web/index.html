@@ -8,8 +8,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpolygon points='7,1.5 12.8,12.5 1.2,12.5' fill='%2327407a'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="styles.css?v=20261123c">
-<link rel="stylesheet" href="app.css?v=20261123c">
+<link rel="stylesheet" href="styles.css?v=20261123d">
+<link rel="stylesheet" href="app.css?v=20261123d">
 </head>
 <body>
 <div id="tip" role="tooltip" hidden></div>
@@ -52,7 +52,7 @@
   <!-- New lesson -->
   <section class="view card narrow" id="view-nouvelle" hidden aria-labelledby="t-nouvelle">
     <h2 id="t-nouvelle">Nouvelle séance</h2>
-    <p class="status">Décrivez la séance comme dans un message, ou cliquez sur les éléments ci-dessous pour les ajouter. Sans précision, la séance est pour 5e à 1er kyu, adultes, et dure 30 minutes. Comptez 3 à 6 minutes de rédaction.</p>
+    <p class="status">Décrivez la séance comme dans un message, ou cliquez sur les éléments ci-dessous pour les ajouter. Sans précision, la séance est pour 5e à 1er kyu, adultes, et dure 30 minutes. Comptez 4 à 8 minutes de rédaction ; inutile de rester sur la page.</p>
     <form id="formNouvelle" class="form">
       <label for="demande" class="sr-only">Votre demande</label>
       <textarea id="demande" rows="5" maxlength="1500" required placeholder="ex. principe : Irimi&#10;attaque : Shomen Uchi&#10;préparation BF, insister sur le timing"></textarea>
@@ -68,12 +68,14 @@
       <div class="spinner" aria-hidden="true"></div>
       <div>
         <h2 id="progressTitle">Rédaction de la séance</h2>
-        <p class="status" id="progressText">L'assistant rédige la séance.</p>
+        <p class="status"><span id="progressText">L'assistant rédige la séance.</span> <span class="clock" id="progressClock"></span></p>
         <ol class="stages" id="stages">
           <li data-stage="write">Rédaction</li>
           <li data-stage="review">Vérification spatiale</li>
           <li data-stage="ready">Prête</li>
         </ol>
+        <p class="come-back"><b>Inutile d'attendre sur cette page.</b> Une séance demande en général 4 à 8 minutes. Vous pouvez fermer la page : la séance sera prête dans « Mes séances ».</p>
+        <div class="form-row"><a class="btn" href="#">Retour à mes séances</a></div>
       </div>
     </div>
     <div class="card error-card" id="errorCard" hidden>
@@ -102,7 +104,7 @@
   </section>
 </div>
 
-<script src="carnet.js?v=20261123c"></script>
-<script src="app.js?v=20261123c"></script>
+<script src="carnet.js?v=20261123d"></script>
+<script src="app.js?v=20261123d"></script>
 </body>
 </html>

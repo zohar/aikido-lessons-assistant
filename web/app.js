@@ -1,10 +1,18 @@
 /* Carnet de séances : logique de l'application (accès, liste, création, suivi, modification).
    Le rendu d'une séance vient de carnet.js (render, esc). L'API est le workflow n8n,
-   joint en même origine via /api/carnet-seances (proxy nginx), avec l'en-tête X-Carnet-Code. */
+   joint en même origine via /api/carnet-seances (proxy nginx), avec l'en-tête X-Carnet-Code.
+   Pendant la rédaction, l'avancement est lu directement dans Supabase (fonction carnet_statut),
+   pour ne pas lancer une exécution n8n à chaque vérification. */
 "use strict";
 
 const API = "api/carnet-seances";
-const POLL_MS = 4000;
+const POLL_MS = 10000;          // progress check while a lesson is being written
+const POLL_RETRY_MS = 30000;    // after a failed check
+const STALE_S = 30 * 60;        // n8n stops a run after 30 min: no news for longer = interrupted
+// Public by design (Supabase "publishable" key): it can only call carnet_statut(),
+// which returns the status of one lesson whose id is known, never its content.
+const SUPABASE_URL = "https://ueuauhnlzhwxqnnwfxzk.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Lyd7sKRG9cF2OlYM0brUHw_lxny1OiU";
 const LS_CODE = "carnet-code";
 const LS_AUTHOR = "carnet-auteur";
 const store = {
@@ -35,6 +43,19 @@ async function api(action, payload = {}) {
   return data;
 }
 
+// Lightweight status: { status, step, age_s } or null if the lesson no longer exists.
+async function statut(id){
+  const res = await fetch(SUPABASE_URL + "/rest/v1/rpc/carnet_statut", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", apikey: SUPABASE_KEY },
+    body: JSON.stringify({ p_id: id })
+  });
+  if (!res.ok) throw new Error("statut " + res.status);
+  const rows = await res.json();
+  return Array.isArray(rows) && rows.length ? rows[0] : null;
+}
+const isBusy = st => st === "generating" || st === "reviewing";
+
 /* ---------- views ---------- */
 const $ = id => document.getElementById(id);
 const VIEWS = ["acces", "liste", "nouvelle", "seance"];
@@ -48,8 +69,8 @@ function fail(e, errEl){
   if (errEl) errEl.textContent = e.message; else alert(e.message);
 }
 
-let pollToken = 0;
-function stopPolling(){ pollToken++; }
+let pollToken = 0, pollTimer = 0, clockTimer = 0, resume = null;
+function stopPolling(){ pollToken++; clearTimeout(pollTimer); clearInterval(clockTimer); resume = null; }
 
 async function route(){
   stopPolling();
@@ -83,7 +104,8 @@ $("formAcces").addEventListener("submit", async e => {
 });
 
 /* ---------- list ---------- */
-const STATUS = { generating: "En rédaction", reviewing: "En vérification", ready: "Prête", error: "Erreur" };
+const STATUS = { generating: "En rédaction", reviewing: "En vérification", ready: "Prête", error: "Erreur", stale: "Interrompue" };
+const listStatus = s => isBusy(s.status) && Date.now() - new Date(s.updated_at) > STALE_S * 1000 ? "stale" : s.status;
 const fmtDate = s => { const d = new Date(s); return isNaN(d) ? "" : d.toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }); };
 
 async function showList(){
@@ -99,7 +121,7 @@ async function showList(){
     $("lessons").innerHTML = items.map(s => `<li><a href="#seance/${esc(s.id)}">
       <span class="t">${esc(s.theme || "Sans titre")}</span>
       <span class="p">${esc(s.public || "")}</span>
-      <span class="m"><span>${fmtDate(s.updated_at)}${s.author ? " · " + esc(s.author) : ""}</span><span class="pill ${esc(s.status)}">${STATUS[s.status] || esc(s.status)}</span></span>
+      <span class="m"><span>${fmtDate(s.updated_at)}${s.author ? " · " + esc(s.author) : ""}</span><span class="pill ${esc(listStatus(s))}">${STATUS[listStatus(s)] || esc(s.status)}</span></span>
     </a></li>`).join("");
   } catch (e){ fail(e, $("listeStatus")); }
 }
@@ -236,15 +258,18 @@ function setProgress(status, step){
   const p = $("progress");
   p.hidden = false;
   $("progressTitle").textContent = step || (status === "reviewing" ? "Vérification spatiale" : "Rédaction de la séance");
-  const mins = Math.floor((Date.now() - startedAt) / 60000), secs = Math.floor((Date.now() - startedAt) / 1000) % 60;
-  $("progressText").textContent = (status === "reviewing"
+  $("progressText").textContent = status === "reviewing"
     ? "Une seconde lecture vérifie les pieds, les mains et les trajectoires de chaque situation."
-    : "L'assistant rédige la séance. Comptez 3 à 6 minutes au total ; vous pouvez quitter cette page et revenir plus tard.")
-    + ` (${mins} min ${String(secs).padStart(2, "0")} s)`;
+    : "L'assistant rédige la séance.";
+  tickClock();
   document.querySelectorAll("#stages li").forEach(li => {
     const s = li.dataset.stage;
     li.className = status === "reviewing" ? (s === "write" ? "done" : s === "review" ? "now" : "") : (s === "write" ? "now" : "");
   });
+}
+function tickClock(){
+  const t = Math.max(0, Math.floor((Date.now() - startedAt) / 1000));
+  $("progressClock").textContent = `${Math.floor(t / 60)} min ${String(t % 60).padStart(2, "0")} s`;
 }
 
 function paint(r){
@@ -264,20 +289,59 @@ async function showLesson(id){
   $("modifierErr").textContent = "";
   startedAt = Date.now();
   const token = ++pollToken;
-  const tick = async () => {
+  try {
+    const r = await api("get", { id });
     if (token !== pollToken) return;
+    paint(r);
+    if (isBusy(r.status)) waitFor(id, token);
+  } catch (e){
+    if (token !== pollToken) return;
+    if (e instanceof AuthError) return fail(e);
+    $("errorCard").hidden = false; $("errorText").textContent = e.message; $("btnRelancer").hidden = true;
+  }
+}
+
+// While the lesson is being written: check its status in Supabase every 10 s (paused while the
+// page is hidden), then load the finished lesson from n8n once.
+function waitFor(id, token){
+  let first = true;
+  clearInterval(clockTimer);
+  clockTimer = setInterval(() => { if (token === pollToken && !$("progress").hidden) tickClock(); }, 1000);
+  const later = ms => { clearTimeout(pollTimer); pollTimer = setTimeout(check, ms); };
+  const finish = async () => {
+    const r = await api("get", { id });
+    if (token !== pollToken) return;
+    paint(r);
+    if (isBusy(r.status)) later(POLL_MS); else clearInterval(clockTimer);
+  };
+  const check = async () => {
+    if (token !== pollToken) return;
+    if (document.hidden){ resume = () => { resume = null; later(0); }; return; }
     try {
-      const r = await api("get", { id });
+      const s = await statut(id);
       if (token !== pollToken) return;
-      paint(r);
-      if (r.status === "generating" || r.status === "reviewing") setTimeout(tick, POLL_MS);
+      if (s && isBusy(s.status)){
+        if (first){ startedAt = Date.now() - (s.age_s || 0) * 1000; first = false; }
+        if (s.age_s > STALE_S) return interrupted();
+        if (s.status !== row.status || s.step !== row.step){ row.status = s.status; row.step = s.step; setProgress(s.status, s.step); }
+        return later(POLL_MS);
+      }
+      await finish();                       // ready, error or deleted
     } catch (e){
       if (token !== pollToken) return;
       if (e instanceof AuthError) return fail(e);
-      $("errorCard").hidden = false; $("errorText").textContent = e.message; $("btnRelancer").hidden = true;
+      try { await finish(); } catch { later(POLL_RETRY_MS); }   // Supabase unreachable: ask n8n instead
     }
   };
-  tick();
+  check();
+}
+document.addEventListener("visibilitychange", () => { if (!document.hidden && resume) resume(); });
+
+function interrupted(){
+  clearInterval(clockTimer);
+  paint({ ...row, status: "error", error: row.data
+    ? "La modification n'a pas abouti (aucune nouvelle depuis plus de 30 minutes). Voici la version précédente ; vous pouvez redemander la modification."
+    : "La rédaction semble interrompue : aucune nouvelle depuis plus de 30 minutes. Relancez la demande." });
 }
 
 $("formModifier").addEventListener("submit", async e => {

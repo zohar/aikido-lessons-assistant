@@ -70,6 +70,10 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
 .stages li.done::before{content:"● ";color:var(--p3)}
 .stages li.now{color:var(--fg);font-weight:600}
 .stages li.now::before{content:"● ";color:var(--accent)}
+.clock{font-family:var(--f-mono, ui-monospace, monospace);font-size:12px;color:var(--muted);white-space:nowrap}
+.come-back{margin:14px 0 0;padding:10px 12px;border-radius:8px;background:var(--p1-soft);font-size:14px;line-height:1.45;max-width:60ch}
+.come-back b{font-weight:600}
+.pill.stale{background:var(--p2-soft);color:var(--warn)}
 .error-card{border-color:var(--warn)}
 .lesson{display:flex;flex-direction:column;gap:36px}
 .lesson:empty{display:none}
