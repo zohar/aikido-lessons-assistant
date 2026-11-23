@@ -109,22 +109,50 @@ const DEFAULT_PUBLIC = "5e à 1er kyu, adultes";
 const DEFAULT_DUREE = 30;
 // Each group inserts "label : value" lines. "single" groups replace their existing line.
 const TOKENS = [
-  { label: "principe", values: ["Irimi", "Tenkan", "Maaï", "Shiseï", "Kamae", "Zanshin", "Kokyu", "Metsuke", "Atemi", "Taï Sabaki", "Omote et Ura", "Kimusubi", "Sen no Sen"] },
-  { label: "technique", values: ["Ikkyo", "Nikyo", "Sankyo", "Yonkyo", "Gokyo", "Iriminage", "Shihonage", "Kotegaeshi", "Kaitennage", "Tenchinage", "Koshinage", "Udekimenage", "Jujigarami", "Sumiotoshi", "Kokyunage", "Kokyuho", "Ushiro Kiriotoshi", "Hijikimeosae"] },
-  { label: "attaque", values: ["Katate Dori", "Aï-hanmi Katate Dori", "Ryote Dori", "Katate Ryote Dori", "Kata Dori", "Muna Dori", "Ryokata Dori", "Shomen Uchi", "Yokomen Uchi", "Kata Dori Men Uchi", "Chudan Tsuki", "Jodan Tsuki", "Ushiro Ryote Dori", "Ushiro Ryokata Dori", "Ushiro Eri Dori", "Ushiro Katate Dori Kubishime"] },
-  { label: "forme", values: ["Suwariwaza", "Hanmihandachiwaza", "Tachiwaza", "Ushirowaza", "Tanto Dori", "Jo Dori", "Tachi Dori", "Randori"] },
-  { label: "concept", values: ["le déséquilibre", "la connexion", "le placement", "la distance", "la vigilance", "la sécurité et les chutes"] },
-  { label: "public", single: true, values: ["débutants, 6e kyu, adultes", "6e à 4e kyu, adultes", "5e à 1er kyu, adultes", "2e à 1er kyu, préparation 1er Dan", "1er Dan", "2e Dan et plus", "enfants 6-8 ans", "enfants 8-12 ans", "adolescents 12-15 ans"] },
-  { label: "durée", single: true, values: ["30 min", "45 min", "60 min", "90 min"] },
-  { label: "cadre", single: true, values: ["cours ordinaire", "préparation BF"] }
+  { key: "principe", label: "principe", values: ["Irimi", "Tenkan", "Maaï", "Shiseï", "Kamae", "Hanmi", "Zanshin", "Kokyu", "Metsuke", "Atemi", "Taï Sabaki", "Omote et Ura", "Kimusubi", "Awase", "De-Aï", "Sen no Sen", "Kiryoku", "Kokyu Ryoku", "Sokudo", "Arukikata", "Reigisaho", "Reishiki", "Seishin Jotaï", "Kokoro no Mochikata", "absence d'ouverture"] },
+  { key: "technique", label: "technique", values: ["Ikkyo", "Nikyo", "Sankyo", "Yonkyo", "Gokyo", "Iriminage", "Shihonage", "Kotegaeshi", "Kaitennage", "Tenchinage", "Koshinage", "Kokyunage", "Udekimenage", "Jujigarami", "Sumiotoshi", "Kokyuho", "Ushiro Kiriotoshi", "Hijikimeosae", "Udegarami", "Aikiotoshi", "Iriminage Sokumen (Naname Kokyunage)", "Uchi Kaitennage", "Soto Kaitennage", "Uchikaiten Sankyo", "Sotokaiten Sankyo"] },
+  { key: "attaque", label: "attaque", values: ["Katate Dori", "Aï-hanmi Katate Dori", "Ryote Dori", "Katate Ryote Dori", "Kata Dori", "Muna Dori", "Ryokata Dori", "Shomen Uchi", "Yokomen Uchi", "Kata Dori Men Uchi", "Chudan Tsuki", "Jodan Tsuki", "Ushiro Ryote Dori", "Ushiro Ryokata Dori", "Ushiro Eri Dori", "Ushiro Ryohiji Dori", "Ushiro Katate Dori Kubishime", "Futaridori", "Taninzugake"] },
+  { key: "forme", label: "forme", values: ["Suwariwaza", "Hanmihandachiwaza", "Tachiwaza", "Ushirowaza", "Bukiwaza", "Tanto Dori", "Jo Dori", "Jo Nage Waza", "Tachi Dori", "Ken Tai Ken", "Jo Tai Jo", "Randori", "Niningake", "Saningake", "Futaridori", "Jyuwaza", "Henka Waza"] },
+  { key: "concept", label: "concept", values: ["le déséquilibre", "la connexion", "le placement", "la distance", "la vigilance", "la sécurité et les chutes"] },
+  { key: "public", label: "public", single: true, values: ["débutants, 6e kyu, adultes", "6e à 4e kyu, adultes", "5e à 1er kyu, adultes", "2e à 1er kyu, préparation 1er Dan", "1er Dan", "2e Dan et plus", "enfants 6-8 ans", "enfants 8-12 ans", "adolescents 12-15 ans"] },
+  { key: "duree", label: "durée", single: true, values: ["30 min", "45 min", "60 min", "90 min"] },
+  { key: "cadre", label: "cadre", single: true, values: ["cours ordinaire", "préparation BF"] }
 ];
 const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
 const lineKey = line => { const m = line.match(/^\s*([^:\n]{2,20}?)\s*:/); return m ? norm(m[1]) : null; };
 const demande = $("demande");
 
-$("tokens").innerHTML = TOKENS.map((g, i) => `<div class="token-group"><span>${esc(g.label)}</span><div class="tokens">${
-  g.values.map(v => `<button type="button" class="token" data-g="${i}" data-v="${esc(v)}">${esc(v)}</button>`).join("")
-}</div></div>`).join("");
+$("tokens").innerHTML = TOKENS.map((g, i) => `<div class="token-group" data-key="${g.key}">
+  <span class="token-label">${esc(g.label)}</span>
+  <div class="token-body">
+    <div class="tokens" id="tokens-${g.key}">${g.values.map(v => `<button type="button" class="token" data-g="${i}" data-v="${esc(v)}">${esc(v)}</button>`).join("")}</div>
+    <button type="button" class="token-more" aria-controls="tokens-${g.key}" aria-expanded="false" hidden></button>
+  </div>
+</div>`).join("");
+
+// Show two lines per group; the rest behind "+ N autres".
+function layoutTokens(){
+  document.querySelectorAll(".token-group").forEach(group => {
+    const box = group.querySelector(".tokens"), more = group.querySelector(".token-more");
+    const open = more.getAttribute("aria-expanded") === "true";
+    box.style.maxHeight = "";
+    const chips = [...box.children];
+    const tops = [...new Set(chips.map(c => c.offsetTop))].sort((x, y) => x - y);
+    if (tops.length <= 2){ more.hidden = true; return; }
+    const hidden = chips.filter(c => c.offsetTop >= tops[2]);
+    hidden.forEach(c => { c.tabIndex = open ? 0 : -1; });
+    more.hidden = false;
+    more.textContent = open ? "Moins" : `+ ${hidden.length} autre${hidden.length > 1 ? "s" : ""}`;
+    if (!open) box.style.maxHeight = (tops[2] - tops[0] - 1) + "px";
+  });
+}
+$("tokens").addEventListener("click", e => {
+  const m = e.target.closest(".token-more"); if (!m) return;
+  m.setAttribute("aria-expanded", m.getAttribute("aria-expanded") === "true" ? "false" : "true");
+  layoutTokens();
+});
+let resizeTimer;
+addEventListener("resize", () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { if (!$("view-nouvelle").hidden) layoutTokens(); }, 150); });
 
 function addToken(group, value){
   const line = `${group.label} : ${value}`;
@@ -177,6 +205,7 @@ function showNew(){
   $("nouvelleErr").textContent = "";
   refreshDemande();
   show("nouvelle");
+  layoutTokens();
   demande.focus();
 }
 $("formNouvelle").addEventListener("submit", async e => {
