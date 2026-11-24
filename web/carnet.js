@@ -154,7 +154,13 @@ const ALIAS = {
 };
 let G = {};
 function buildGlossary(extra){
-  G = Object.assign({}, G0, extra || {});
+  // The official glossary always wins: a lesson can only add terms it does not know,
+  // under any of its spellings, so explanations stay the same in every lesson.
+  const key = t => String(t).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z]/g, "");
+  const known = new Set([...Object.keys(G0), ...Object.keys(ALIAS)].map(key));
+  const add = {};
+  for (const [t, v] of Object.entries(extra || {})) if (!known.has(key(t)) && Array.isArray(v)) add[t] = v;
+  G = Object.assign({}, G0, add);
   const lookup = {};
   for (const k of Object.keys(G)) lookup[k] = k;
   for (const [a,k] of Object.entries(ALIAS)) if (G[k]) lookup[a] = k;
