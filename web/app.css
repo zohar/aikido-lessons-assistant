@@ -93,7 +93,7 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
 .gl-def{margin:0;font-size:14px;line-height:1.45;min-width:0}
 .gl-romaji{font-size:12px;font-style:italic;color:var(--muted)}
 .gl-alt{display:block;font-size:12px;color:var(--muted);margin-top:2px}
-.gl-start{align-self:flex-start;margin-top:5px;font-size:12px;color:var(--muted);text-decoration:underline dashed;text-decoration-color:color-mix(in srgb, var(--muted) 60%, transparent);text-underline-offset:3px;border-radius:3px}
+.gl-start{display:block;width:fit-content;margin-top:4px;font-size:12px;color:var(--muted);text-decoration:underline dashed;text-decoration-color:color-mix(in srgb, var(--muted) 60%, transparent);text-underline-offset:3px;border-radius:3px}
 .gl-start:hover{color:var(--gc);text-decoration-color:currentColor}
 .gl-start:focus-visible{outline:2px solid var(--gc);outline-offset:2px}
 @media print{.gl-start{display:none}}
@@ -105,7 +105,7 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
 .gl-sec[data-key="grade"],.gcat[data-key="grade"]{--gc:var(--g-public)}
 .gl-sec[data-key="arme"],.gcat[data-key="arme"]{--gc:var(--g-cadre)}
 #gloss{display:flex;flex-direction:column;gap:28px}
-@media (max-width:560px){.gl{grid-template-columns:1fr}.gl-head{flex-direction:row;flex-wrap:wrap;gap:2px 8px;align-items:baseline}.gl-start{flex-basis:100%;margin-top:0}
+@media (max-width:560px){.gl{grid-template-columns:1fr}.gl-head{flex-direction:row;flex-wrap:wrap;gap:2px 8px;align-items:baseline}
   .gloss-cats{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -2px;padding:1px 2px}.gcat{flex:none}}
 
 /* progress */

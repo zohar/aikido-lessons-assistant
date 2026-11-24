@@ -447,9 +447,9 @@ function buildGlossaryPage(){
         <span class="gl-term">${esc(e.term)}</span>
         <span class="gl-kanji" lang="ja">${esc(e.kanji)}</span>
         <span class="gl-romaji">${esc(e.romaji)}</span>
-        <a class="gl-start" href="#nouvelle" data-term="${esc(e.term)}" data-cat="${e.cat}" aria-label="Créer une séance avec ${esc(e.term)}">créer une séance</a>
       </div>
-      <p class="gl-def">${esc(e.def)}${e.alt.length ? `<span class="gl-alt">Aussi : ${e.alt.map(esc).join(", ")}</span>` : ""}</p>
+      <p class="gl-def">${esc(e.def)}${e.alt.length ? `<span class="gl-alt">Aussi : ${e.alt.map(esc).join(", ")}</span>` : ""}
+        <a class="gl-start" href="#nouvelle" data-term="${esc(e.term)}" data-cat="${e.cat}" aria-label="Créer une séance avec ${esc(e.term)}">créer une séance</a></p>
     </li>`).join("")}</ul>
   </section>`).join("");
   glossBuilt = true;
