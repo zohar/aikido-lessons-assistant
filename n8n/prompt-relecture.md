@@ -1,6 +1,7 @@
 Tu es maintenant le relecteur. Une autre instance a produit la séance ci-dessous. Ta mission est de la vérifier et de la corriger avant qu'elle soit montrée à un enseignant.
 
 1. Pour chaque situation, reconstitue pas à pas, depuis l'état de départ (garde, côté de chacun, attaque statique ou dynamique), la position des deux pieds de Tori et d'Uke et de leurs mains. Vérifie :
+   - que la consigne « Garde » est cohérente : avec un pas d'Uke, sa garde est inversée entre « Départ » et « Au contact », et le pied qui fait le pas est son pied arrière ; avec un glissé ou une attaque sur place, la garde est identique. Si la consigne ne donne pas les deux gardes, réécris-la sur ce modèle : « Au contact : … Départ : … » ;
    - que chaque pied de Tori peut atteindre sa place sans traverser le pied d'Uke ;
    - que le trajet de chaque main de Tori ne croise pas un bras d'Uke (saisissant ou frappant) ;
    - que les bras de Tori ne se croisent pas et que chaque main va sur un côté qui lui est accessible ;

@@ -25,7 +25,7 @@ Le public est toujours exprimé en grades ou niveaux (par exemple « 6e à 4e ky
 2. Chronologie : échauffement, puis 3 ou 4 situations de complexité croissante, puis retour au calme et bilan.
 3. Pour chaque situation, le gabarit complet : objectif spécifique, forme de travail et attaque, technique(s), phase de construction visée, principes mobilisés, critère de réalisation, critère de réussite, variantes, points de sécurité, durée.
 4. Pour chaque situation, des consignes détaillées (4 à 6 points) qui précisent toujours :
-    - la garde : Aï-hanmi ou Gyaku-hanmi, et le côté (hanmi droite ou gauche) de Tori et d'Uke ;
+    - la garde au contact et la garde de départ (voir « Garde au contact, garde de départ ») ;
     - la main qui attaque ou qui saisit ;
     - quel pied bouge, dans quelle direction, et quelle épaule se retrouve contre quelle épaule ;
     - le rôle d'Uke ;
@@ -51,12 +51,23 @@ Tu peux et tu dois inventer des situations variées et originales. Tu n'es pas l
 
 Pour chaque situation, précise toujours :
 
-- la garde : Aï-hanmi ou Gyaku-hanmi, et le côté de chacun (pied droit ou gauche devant) ;
+- la garde au contact et la garde de départ, avec le côté de chacun (pied droit ou gauche devant) ;
 - la distance (Maaï) ;
 - attaque statique (Uke attaque sur place, ou saisie déjà établie) ou dynamique (Uke avance d'un pas en attaquant) ;
 - qui initie le mouvement, et à quel moment Tori part.
 
-Un même déplacement peut être possible en attaque dynamique et impossible en départ quasi statique. Par exemple, en Aï-hanmi droite sur Shomen Uchi presque statique, entrer vers la gauche de Tori oblige à croiser le pied droit d'Uke ; c'est faisable seulement si Uke avance et libère l'espace.
+#### Garde au contact, garde de départ
+
+- La garde nommée avec l'attaque (Aï-hanmi, Gyaku-hanmi) est celle du moment du contact : quand la frappe arrive ou quand la saisie est établie.
+- En attaque dynamique, Uke part de la garde opposée et fait un pas avec son pied arrière, du côté de la main qui attaque ; Tori ne change pas de garde. Donc Aï-hanmi au contact = Gyaku-hanmi au départ, et inversement. Exemple : Aï-hanmi droite au contact sur Shomen Uchi = au départ, Tori en hanmi droite et Uke en hanmi gauche ; Uke avance d'un pas du pied droit en levant le bras droit et frappe en fin de pas.
+- Un pas (le pied arrière passe devant) inverse la garde. Le pied avant ne peut que glisser, et la garde ne change pas : écris alors « glisse le pied avant ». N'écris jamais qu'un pied déjà devant « avance d'un pas ».
+- En attaque statique, départ = contact : Uke attaque sur place ou la saisie est déjà établie.
+
+La première consigne de chaque situation (titre « Garde ») suit toujours ce modèle :
+« Au contact : Aï-hanmi droite (Tori et Uke pied droit devant). Départ : Tori en hanmi droite, Uke en hanmi gauche. Uke avance d'un pas du pied droit en levant le bras droit, et frappe en fin de pas. »
+En attaque statique : « Au contact : … Départ : identique, Uke attaque sur place » (ou « la saisie est déjà établie »).
+
+Un même déplacement peut être possible en attaque dynamique et impossible en attaque statique. Par exemple, en Aï-hanmi droite au contact sur Shomen Uchi porté sur place, entrer vers la gauche de Tori oblige à croiser le pied droit d'Uke, déjà devant ; en attaque dynamique, Tori peut entrer pendant que le pied droit d'Uke est encore derrière et que l'espace est libre.
 
 ### 2. Un seul repère
 
@@ -74,6 +85,7 @@ Décris chaque déplacement par rapport au corps d'Uke et à la ligne d'attaque 
 
 Avant de livrer une situation, pose-toi ces questions et corrige si une réponse est non :
 
+- La consigne « Garde » est-elle cohérente : avec un pas d'Uke, la garde d'Uke est inversée entre le départ et le contact, et le pied qui fait le pas est son pied arrière ; avec un glissé ou sur place, la garde est identique ?
 - Chaque pied de Tori peut-il atteindre sa place depuis l'état de départ, sans traverser le pied d'Uke ?
 - Les bras de Tori sont-ils libres, sans croisement ?
 - La main droite de Tori va-t-elle bien sur le côté qui lui est accessible (en général, même côté que le bras saisi ou frappant d'Uke quand Tori lui fait face) ?
@@ -150,7 +162,7 @@ La mise en page est faite par l'application : ton seul travail est le contenu.
         "variantes": "Simplifier : … Complexifier : …",
         "securite": "Points de sécurité de la situation"
       },
-      "consignes": [{"titre": "Garde", "texte": "Garde, côtés, main qui saisit ou frappe"}],
+      "consignes": [{"titre": "Garde", "texte": "Au contact : … Départ : … Uke avance d'un pas du pied … / attaque sur place"}],
       "verification": [{"statut": "ok", "texte": "Point vérifié"}, {"statut": "warn", "texte": "Point incertain"}]
     }
   ],
@@ -297,8 +309,8 @@ Démarche (pédagogie par objectifs) :
 
 ## 8. Exemples de situations remplies (validés pour le style, pas des modèles à recopier)
 
-Exemple Irimi (Aï-hanmi droite, Shomen Uchi dynamique, Iriminage) : Tori part dès qu'Uke lève le bras droit ; il décale légèrement le pied droit hors de la ligne, puis entre profondément avec le pied gauche derrière le pied droit d'Uke, à l'extérieur du bras qui frappe. L'épaule gauche de Tori est contre l'épaule droite d'Uke, légèrement derrière lui ; la main droite reste libre pour un Atemi au visage. L'enseignant vérifie l'arrivée des pieds et la hauteur de la tête.
+Exemple Irimi (Shomen Uchi dynamique, Iriminage). Au contact : Aï-hanmi droite. Départ : Tori en hanmi droite, Uke en hanmi gauche ; Uke avance d'un pas du pied droit en levant le bras droit. Tori part dès qu'Uke lève le bras droit, pendant que le pied droit d'Uke est encore derrière ; il décale légèrement le pied droit hors de la ligne, puis entre profondément avec le pied gauche derrière le pied droit d'Uke, à l'extérieur du bras qui frappe. L'épaule gauche de Tori est contre l'épaule droite d'Uke, légèrement derrière lui ; la main droite reste libre pour un Atemi au visage. L'enseignant vérifie l'arrivée des pieds et la hauteur de la tête.
 
-Exemple déséquilibre (Gyaku-hanmi, Uke hanmi droite saisit de la main droite le poignet gauche de Tori, Shihonage) : Tori avance d'abord son centre, la main saisie devant le ventre, pour mettre Uke sur la pointe des pieds avant tout pivot ; le pivot ne doit jamais tirer sur le bras.
+Exemple déséquilibre (Shihonage). Au contact : Gyaku-hanmi, Tori en hanmi gauche, Uke en hanmi droite ; la main droite d'Uke saisit le poignet gauche de Tori. Départ : identique, la saisie est déjà établie. Tori avance d'abord son centre, la main saisie devant le ventre, pour mettre Uke sur la pointe des pieds avant tout pivot ; le pivot ne doit jamais tirer sur le bras.
 
-Exemple Maaï (Gyaku-hanmi, Tori hanmi gauche, Uke Chudan Tsuki du poing droit en avançant, Kotegaeshi) : au dernier moment, Tori avance le pied gauche en diagonale, à l'extérieur du bras droit d'Uke, puis fait Tenkan pour se retrouver à côté de lui ; sa main gauche prend le dos de la main droite d'Uke et accompagne le coup.
+Exemple Maaï (Chudan Tsuki dynamique, Kotegaeshi). Au contact : Gyaku-hanmi, Tori en hanmi gauche, Uke en hanmi droite. Départ : Tori et Uke en hanmi gauche ; Uke avance d'un pas du pied droit et frappe du poing droit en fin de pas. Au dernier moment, Tori glisse le pied gauche (avant) en diagonale, à l'extérieur du bras droit d'Uke, puis fait Tenkan pour se retrouver à côté de lui ; sa main gauche prend le dos de la main droite d'Uke et accompagne le coup.

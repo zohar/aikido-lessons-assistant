@@ -36,7 +36,7 @@
         "securite": "Aucune torsion du poignet"
       },
       "consignes": [
-        {"titre": "Garde", "texte": "Gyaku-hanmi : Tori pied gauche devant, Uke pied droit devant. La main droite d'Uke tient le poignet gauche de Tori."},
+        {"titre": "Garde", "texte": "Au contact : Gyaku-hanmi, Tori pied gauche devant, Uke pied droit devant ; la main droite d'Uke tient le poignet gauche de Tori. Départ : identique, la saisie est déjà établie."},
         {"titre": "Placement", "texte": "Tori pose le pied gauche juste à l'extérieur du pied droit d'Uke, la main saisie devant le centre."},
         {"titre": "Pivot", "texte": "Tori pivote sur le pied gauche et ramène le pied droit en arrière. Il finit à côté d'Uke, face à la même direction."},
         {"titre": "Fin", "texte": "L'épaule gauche de Tori est à côté de l'épaule droite d'Uke, la main saisie toujours devant le centre."},
@@ -94,9 +94,9 @@
         "securite": "Immobilisation progressive ; Uke tape pour signaler"
       },
       "consignes": [
-        {"titre": "Garde", "texte": "Aï-hanmi : Tori et Uke pied droit devant. La main droite d'Uke tient le poignet droit de Tori."},
+        {"titre": "Garde", "texte": "Au contact : Aï-hanmi droite, Tori et Uke pied droit devant ; la main droite d'Uke tient le poignet droit de Tori. Départ : identique, la saisie est déjà établie."},
         {"titre": "Montée", "texte": "Tori monte la main saisie par le centre. Sa main gauche vient sous le coude droit d'Uke."},
-        {"titre": "Entrée", "texte": "Tori avance le pied droit, juste à l'intérieur du pied droit d'Uke, vers son centre."},
+        {"titre": "Entrée", "texte": "Tori glisse le pied droit (avant) juste à l'intérieur du pied droit d'Uke, vers son centre."},
         {"titre": "Coupe", "texte": "Tori monte le coude d'Uke puis coupe vers le bas et l'avant en avançant, dos droit."},
         {"titre": "Pour l'enseignant", "texte": "Vérifier que la coupe vient du pas et des hanches, pas d'un buste qui plonge."}
       ],
