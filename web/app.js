@@ -415,9 +415,9 @@ $("formImporter").addEventListener("submit", async e => {
 // G0 is ordered by category; each key below opens a new category.
 const GLOSS_CATS = [
   { key: "principe", label: "Principes" }, { key: "pratique", label: "Pratique" }, { key: "forme", label: "Formes de travail" },
-  { key: "attaque", label: "Attaques" }, { key: "technique", label: "Techniques" }, { key: "grade", label: "Grades" }
+  { key: "arme", label: "Armes" }, { key: "attaque", label: "Attaques" }, { key: "technique", label: "Techniques" }, { key: "grade", label: "Grades" }
 ];
-const GLOSS_STARTS = { "Shisei": "principe", "Tori": "pratique", "Suwariwaza": "forme", "Kihon": "pratique", "Katate Dori": "attaque", "Ikkyo": "technique", "Kyu": "grade" };
+const GLOSS_STARTS = { "Shisei": "principe", "Tori": "pratique", "Suwariwaza": "forme", "Buki": "arme", "Kihon": "pratique", "Kogekiho": "attaque", "Ikkyo": "technique", "Kyu": "grade" };
 let glossCat = "", glossBuilt = false;
 const glossEntries = (() => {
   const aliases = {};
@@ -425,7 +425,8 @@ const glossEntries = (() => {
   let cat = "principe";
   return Object.entries(G0).map(([term, [kanji, romaji, def]]) => {
     if (GLOSS_STARTS[term]) cat = GLOSS_STARTS[term];
-    return { term, kanji, romaji, def, cat, search: norm([term, romaji, def, ...(aliases[term] || [])].join(" ")) };
+    const alt = (aliases[term] || []).filter(a => a.toLowerCase() !== term.toLowerCase());
+    return { term, kanji, romaji, def, cat, alt, search: norm([term, romaji, def, ...alt].join(" ")) };
   });
 })();
 
@@ -437,7 +438,7 @@ function buildGlossaryPage(){
     <h2 id="gl-${c.key}">${c.label}</h2>
     <ul class="gl-list">${byCat(c.key).map(e => `<li class="gl" data-s="${esc(e.search)}">
       <div class="gl-head"><span class="gl-term">${esc(e.term)}</span><span class="gl-kanji" lang="ja">${esc(e.kanji)}</span></div>
-      <p class="gl-def"><span class="gl-romaji">${esc(e.romaji)}</span>${esc(e.def)}</p>
+      <p class="gl-def"><span class="gl-romaji">${esc(e.romaji)}</span>${esc(e.def)}${e.alt.length ? `<span class="gl-alt">Aussi : ${e.alt.map(esc).join(", ")}</span>` : ""}</p>
     </li>`).join("")}</ul>
   </section>`).join("");
   glossBuilt = true;

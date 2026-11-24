@@ -92,12 +92,14 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
 .gl-kanji{font-size:13px;color:var(--muted)}
 .gl-def{margin:0;font-size:14px;line-height:1.45;min-width:0}
 .gl-romaji{display:block;font-size:12px;font-style:italic;color:var(--muted)}
+.gl-alt{display:block;font-size:12px;color:var(--muted);margin-top:2px}
 .gl-sec[data-key="principe"],.gcat[data-key="principe"]{--gc:var(--g-principe)}
 .gl-sec[data-key="pratique"],.gcat[data-key="pratique"]{--gc:var(--g-concept)}
 .gl-sec[data-key="forme"],.gcat[data-key="forme"]{--gc:var(--g-forme)}
 .gl-sec[data-key="attaque"],.gcat[data-key="attaque"]{--gc:var(--g-attaque)}
 .gl-sec[data-key="technique"],.gcat[data-key="technique"]{--gc:var(--g-technique)}
 .gl-sec[data-key="grade"],.gcat[data-key="grade"]{--gc:var(--g-public)}
+.gl-sec[data-key="arme"],.gcat[data-key="arme"]{--gc:var(--g-cadre)}
 #gloss{display:flex;flex-direction:column;gap:28px}
 @media (max-width:560px){.gl{grid-template-columns:1fr}.gl-head{flex-direction:row;gap:8px;align-items:baseline}
   .gloss-cats{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -2px;padding:1px 2px}.gcat{flex:none}}
