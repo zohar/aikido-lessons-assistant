@@ -23,7 +23,9 @@
       "titre": "Shisei sous saisie",
       "technique": "Tai no henko",
       "duree": 7,
-      "phases": [1],
+      "phases": [
+        1
+      ],
       "forme": "Tachiwaza · Gyaku-hanmi Katate Dori",
       "gabarit": {
         "objectif": "Bouger depuis le centre sans se pencher quand on est saisi",
@@ -35,24 +37,19 @@
         "variantes": "Simplifier : saisie légère. Complexifier : Uke saisit fort et pousse",
         "securite": "Aucune torsion du poignet"
       },
-      "consignes": [
-        {"titre": "Garde", "texte": "Au contact : Gyaku-hanmi, Tori pied gauche devant, Uke pied droit devant ; la main droite d'Uke tient le poignet gauche de Tori. Départ : identique, la saisie est déjà établie."},
-        {"titre": "Placement", "texte": "Tori pose le pied gauche juste à l'extérieur du pied droit d'Uke, la main saisie devant le centre."},
-        {"titre": "Pivot", "texte": "Tori pivote sur le pied gauche et ramène le pied droit en arrière. Il finit à côté d'Uke, face à la même direction."},
-        {"titre": "Fin", "texte": "L'épaule gauche de Tori est à côté de l'épaule droite d'Uke, la main saisie toujours devant le centre."},
-        {"titre": "Pour l'enseignant", "texte": "Regarder la tête pendant le pivot : si elle descend ou part en avant, la posture a lâché."}
-      ],
-      "verification": [
-        {"statut": "ok", "texte": "Le pied gauche de Tori était déjà face au pied droit d'Uke : il ne croise rien."},
-        {"statut": "ok", "texte": "Aucun bras ne croise, ni ceux de Tori ni le trajet de la main saisie."},
-        {"statut": "ok", "texte": "La main libre d'Uke (gauche) reste du côté opposé à Tori."}
-      ]
+      "notes": {
+        "uke": "Uke saisit fermement le poignet sans tirer ni pousser, puis suit le pivot avec un pas, sans lâcher et sans se raidir.",
+        "enseignant": "Regarder la tête pendant le pivot : si elle descend ou part en avant, la posture a lâché. Faire décomposer pas puis pivot si la main saisie s'éloigne du centre."
+      }
     },
     {
       "titre": "Shisei à genoux",
       "technique": "Kokyuho",
       "duree": 8,
-      "phases": [2, 3],
+      "phases": [
+        2,
+        3
+      ],
       "forme": "Suwariwaza · Ryote Dori",
       "gabarit": {
         "objectif": "Déséquilibrer Uke en restant droit en Seiza",
@@ -64,24 +61,20 @@
         "variantes": "Simplifier : s'arrêter au déséquilibre. Complexifier : Uke pousse vers l'avant",
         "securite": "Uke chute lentement en arrière ; attention aux genoux"
       },
-      "consignes": [
-        {"titre": "Position", "texte": "Tori et Uke en Seiza, face à face. La main gauche d'Uke tient le poignet droit de Tori, sa main droite le poignet gauche."},
-        {"titre": "Montée", "texte": "Tori monte les deux mains par le centre, coudes bas, dos vertical, sans avancer le buste."},
-        {"titre": "Déséquilibre", "texte": "Le poids d'Uke monte puis part vers l'arrière."},
-        {"titre": "Immobilisation", "texte": "Tori tourne les hanches d'un côté et pose Uke au sol de ce côté, en le suivant à genoux."},
-        {"titre": "Pour l'enseignant", "texte": "Une épaule qui monte ou un buste qui avance signale une poussée des bras au lieu du centre."}
-      ],
-      "verification": [
-        {"statut": "ok", "texte": "Les bras d'Uke vont droit aux poignets de Tori : rien ne se croise."},
-        {"statut": "ok", "texte": "Uke n'a pas de main libre."},
-        {"statut": "warn", "texte": "Le déplacement des genoux de Tori pour suivre Uke au sol reste à préciser."}
-      ]
+      "notes": {
+        "uke": "Uke saisit les deux poignets en Seiza, assis sur les talons, avec une pression modérée vers l'avant ; il accepte de monter quand son poids est soulevé.",
+        "enseignant": "Une épaule qui monte ou un buste qui avance signale une poussée des bras au lieu du centre. Revenir à une saisie légère si Tori force."
+      }
     },
     {
       "titre": "Shisei en mouvement",
       "technique": "Ikkyo Omote",
       "duree": 7,
-      "phases": [1, 2, 3],
+      "phases": [
+        1,
+        2,
+        3
+      ],
       "forme": "Tachiwaza · Aï-hanmi Katate Dori",
       "gabarit": {
         "objectif": "Rester vertical en amenant Uke au sol",
@@ -93,18 +86,10 @@
         "variantes": "Simplifier : coupe lente et guidée. Complexifier : saisie dynamique",
         "securite": "Immobilisation progressive ; Uke tape pour signaler"
       },
-      "consignes": [
-        {"titre": "Garde", "texte": "Au contact : Aï-hanmi droite, Tori et Uke pied droit devant ; la main droite d'Uke tient le poignet droit de Tori. Départ : identique, la saisie est déjà établie."},
-        {"titre": "Montée", "texte": "Tori monte la main saisie par le centre. Sa main gauche vient sous le coude droit d'Uke."},
-        {"titre": "Entrée", "texte": "Tori glisse le pied droit (avant) juste à l'intérieur du pied droit d'Uke, vers son centre."},
-        {"titre": "Coupe", "texte": "Tori monte le coude d'Uke puis coupe vers le bas et l'avant en avançant, dos droit."},
-        {"titre": "Pour l'enseignant", "texte": "Vérifier que la coupe vient du pas et des hanches, pas d'un buste qui plonge."}
-      ],
-      "verification": [
-        {"statut": "ok", "texte": "Le pied droit de Tori arrive à l'intérieur du pied avant d'Uke : il ne le croise pas."},
-        {"statut": "ok", "texte": "La main gauche de Tori rejoint le coude par en dessous, sans passer par-dessus le bras d'Uke."},
-        {"statut": "warn", "texte": "En entrant à l'intérieur, Tori se rapproche de la main libre gauche d'Uke. Monter le coude devrait l'occuper, mais cela dépend du timing."}
-      ]
+      "notes": {
+        "uke": "Uke tient la saisie sans bloquer, garde sa main libre devant lui et descend au sol sans résister quand le coude est conduit.",
+        "enseignant": "Vérifier que la coupe vient du pas et des hanches, pas d'un buste qui plonge. Faire répéter lentement si Tori se penche au moment de couper."
+      }
     }
   ],
   "bilan": {
