@@ -98,7 +98,7 @@ $("formAcces").addEventListener("submit", async e => {
   const btn = e.submitter; btn.disabled = true;
   store.set(LS_CODE, $("code").value.trim());
   store.set(LS_AUTHOR, $("auteur").value.trim());
-  try { await api("list"); $("code").value = ""; location.hash = ""; }
+  try { await api("list"); $("code").value = ""; location.hash = pendingTerm ? "#nouvelle" : ""; }
   catch (err){
     if (err instanceof AuthError){ store.del(LS_CODE); $("accesErr").textContent = "Ce code n'est pas reconnu. Vérifiez-le auprès du club."; }
     else $("accesErr").textContent = err.message;
@@ -227,10 +227,16 @@ demande.addEventListener("keydown", e => {
 function showNew(){
   document.title = "Nouvelle séance · Carnet de séances";
   $("nouvelleErr").textContent = "";
+  if (pendingTerm){
+    const { label, value } = pendingTerm;
+    setPendingTerm(null);
+    addToken({ label, single: label === "public" }, value);
+  }
   refreshDemande();
   show("nouvelle");
   layoutTokens();
   demande.focus();
+  demande.setSelectionRange(demande.value.length, demande.value.length);
 }
 $("formNouvelle").addEventListener("submit", async e => {
   e.preventDefault();
@@ -438,7 +444,8 @@ function buildGlossaryPage(){
     <h2 id="gl-${c.key}">${c.label}</h2>
     <ul class="gl-list">${byCat(c.key).map(e => `<li class="gl" data-s="${esc(e.search)}">
       <div class="gl-head"><span class="gl-term">${esc(e.term)}</span><span class="gl-kanji" lang="ja">${esc(e.kanji)}</span></div>
-      <p class="gl-def"><span class="gl-romaji">${esc(e.romaji)}</span>${esc(e.def)}${e.alt.length ? `<span class="gl-alt">Aussi : ${e.alt.map(esc).join(", ")}</span>` : ""}</p>
+      <p class="gl-def"><span class="gl-romaji">${esc(e.romaji)}</span>${esc(e.def)}${e.alt.length ? `<span class="gl-alt">Aussi : ${e.alt.map(esc).join(", ")}</span>` : ""}
+        <a class="gl-start" href="#nouvelle" data-term="${esc(e.term)}" data-cat="${e.cat}" aria-label="Créer une séance avec ${esc(e.term)}">Créer une séance avec ce terme →</a></p>
     </li>`).join("")}</ul>
   </section>`).join("");
   glossBuilt = true;
@@ -463,6 +470,17 @@ function showGlossary(){
   filterGlossary();
 }
 $("glossQ").addEventListener("input", filterGlossary);
+// « Créer une séance avec ce terme » : the term waits until the new-lesson page opens
+// (kept for the session, so it survives the access-code page).
+const START_LABEL = { principe: "principe", technique: "technique", attaque: "attaque", forme: "forme", arme: "arme", pratique: "thème", grade: "public" };
+const PENDING = "carnet-terme";
+function setPendingTerm(v){ try { v ? sessionStorage.setItem(PENDING, JSON.stringify(v)) : sessionStorage.removeItem(PENDING); } catch {} pendingTerm = v; }
+let pendingTerm = (() => { try { return JSON.parse(sessionStorage.getItem(PENDING) || "null"); } catch { return null; } })();
+$("gloss").addEventListener("click", e => {
+  const a = e.target.closest(".gl-start"); if (!a) return;
+  setPendingTerm({ label: START_LABEL[a.dataset.cat] || "thème", value: a.dataset.term });
+});
+
 $("glossCats").addEventListener("click", e => {
   const b = e.target.closest(".gcat"); if (!b) return;
   glossCat = b.dataset.cat;
