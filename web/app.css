@@ -86,15 +86,15 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
 .gl-sec{--gc:var(--fg)}
 .gl-sec h2{font-family:var(--f-display);font-size:19px;margin:0 0 6px;color:var(--gc)}
 .gl-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));gap:0 28px}
-.gl{display:grid;grid-template-columns:minmax(0,170px) minmax(0,1fr);gap:4px 14px;padding:9px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.gl{display:grid;grid-template-columns:minmax(0,170px) minmax(0,1fr);gap:4px 14px;padding:9px 0;border-bottom:1px solid var(--line);align-items:start}
 .gl-head{display:flex;flex-direction:column;gap:1px;min-width:0}
 .gl-term{font-family:var(--f-display);font-weight:700;font-size:15px;color:var(--gc);overflow-wrap:anywhere}
 .gl-kanji{font-size:13px;color:var(--muted)}
 .gl-def{margin:0;font-size:14px;line-height:1.45;min-width:0}
-.gl-romaji{display:block;font-size:12px;font-style:italic;color:var(--muted)}
+.gl-romaji{font-size:12px;font-style:italic;color:var(--muted)}
 .gl-alt{display:block;font-size:12px;color:var(--muted);margin-top:2px}
-.gl-start{display:inline-block;margin-top:4px;font-size:12.5px;font-weight:600;color:var(--gc);text-decoration:none;border-radius:4px}
-.gl-start:hover{text-decoration:underline}
+.gl-start{align-self:flex-start;margin-top:5px;font-size:12px;color:var(--muted);text-decoration:underline dashed;text-decoration-color:color-mix(in srgb, var(--muted) 60%, transparent);text-underline-offset:3px;border-radius:3px}
+.gl-start:hover{color:var(--gc);text-decoration-color:currentColor}
 .gl-start:focus-visible{outline:2px solid var(--gc);outline-offset:2px}
 @media print{.gl-start{display:none}}
 .gl-sec[data-key="principe"],.gcat[data-key="principe"]{--gc:var(--g-principe)}
@@ -105,7 +105,7 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
 .gl-sec[data-key="grade"],.gcat[data-key="grade"]{--gc:var(--g-public)}
 .gl-sec[data-key="arme"],.gcat[data-key="arme"]{--gc:var(--g-cadre)}
 #gloss{display:flex;flex-direction:column;gap:28px}
-@media (max-width:560px){.gl{grid-template-columns:1fr}.gl-head{flex-direction:row;gap:8px;align-items:baseline}
+@media (max-width:560px){.gl{grid-template-columns:1fr}.gl-head{flex-direction:row;flex-wrap:wrap;gap:2px 8px;align-items:baseline}.gl-start{flex-basis:100%;margin-top:0}
   .gloss-cats{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -2px;padding:1px 2px}.gcat{flex:none}}
 
 /* progress */

@@ -443,9 +443,13 @@ function buildGlossaryPage(){
   $("gloss").innerHTML = GLOSS_CATS.map(c => `<section class="gl-sec" data-key="${c.key}" aria-labelledby="gl-${c.key}">
     <h2 id="gl-${c.key}">${c.label}</h2>
     <ul class="gl-list">${byCat(c.key).map(e => `<li class="gl" data-s="${esc(e.search)}">
-      <div class="gl-head"><span class="gl-term">${esc(e.term)}</span><span class="gl-kanji" lang="ja">${esc(e.kanji)}</span></div>
-      <p class="gl-def"><span class="gl-romaji">${esc(e.romaji)}</span>${esc(e.def)}${e.alt.length ? `<span class="gl-alt">Aussi : ${e.alt.map(esc).join(", ")}</span>` : ""}
-        <a class="gl-start" href="#nouvelle" data-term="${esc(e.term)}" data-cat="${e.cat}" aria-label="Créer une séance avec ${esc(e.term)}">Créer une séance avec ce terme →</a></p>
+      <div class="gl-head">
+        <span class="gl-term">${esc(e.term)}</span>
+        <span class="gl-kanji" lang="ja">${esc(e.kanji)}</span>
+        <span class="gl-romaji">${esc(e.romaji)}</span>
+        <a class="gl-start" href="#nouvelle" data-term="${esc(e.term)}" data-cat="${e.cat}" aria-label="Créer une séance avec ${esc(e.term)}">créer une séance</a>
+      </div>
+      <p class="gl-def">${esc(e.def)}${e.alt.length ? `<span class="gl-alt">Aussi : ${e.alt.map(esc).join(", ")}</span>` : ""}</p>
     </li>`).join("")}</ul>
   </section>`).join("");
   glossBuilt = true;
