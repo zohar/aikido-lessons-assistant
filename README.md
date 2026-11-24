@@ -11,20 +11,23 @@ Browser ──POST /api/carnet-seances──▶ nginx (this container, Coolify)
                          n8n workflow « Carnet de séances – API »
                          ├─ list / get / delete ──▶ Supabase aikido_seances
                          ├─ import: checks a lesson JSON, saves it as ready
-                         └─ generate / revise (async)
-                              1. answers at once with the lesson id
-                              2. Opus 5.5 writes the lesson JSON (OpenRouter)
-                              3. code checks the format (Sonnet repairs it if needed)
-                              4. Sonnet 5.5 re-checks feet, hands and paths
-                              5. saves the lesson in Supabase (status = ready)
+                         ├─ generate (async): the writer builds the lesson — templates
+                         │    plus notes for Uke and the teacher, no foot-by-foot
+                         │    placements — code checks the format, saves it (no AI review)
+                         ├─ revise (async): the writer returns only the changes,
+                         │    code merges them; a changed exercise loses its detailed
+                         │    instructions and is tagged « à redétailler »
+                         └─ detail (async, on request, per exercise): detailed
+                              instructions with the spatial method, then a review that
+                              sends back corrections only, applied by code
 While waiting, the browser asks Supabase directly (function carnet_statut) every 10 s,
-paused while the tab is hidden, and calls n8n « get » only once more, when the lesson is done.
+paused while the tab is hidden, and calls n8n « get » only once more, when it is done.
 ```
 
 - `web/`: the app (static HTML/CSS/JS, no build step). `carnet.js` holds the lesson rendering and glossary; `app.js` the screens.
 - `deploy/`: nginx config template; `Dockerfile`: the container Coolify builds.
-- `n8n/`: sources of the n8n workflow (prompts, validation code incl. `valider-import.js`, generator). The live copy is in n8n; edit the prompts in the n8n node « Consignes de l'assistant ».
-- `supabase/`: the table, the status function and the `resume` column used for list titles (all already applied).
+- `n8n/`: sources of the n8n workflow. Prompts: `prompt-systeme.md` (writer), `prompt-details.md` (detailed instructions), `prompt-relecture.md` (review of the details). Code nodes are built from `n8n/src/` by `python3 n8n/build_codes.py` (shared `common.js` + one part per node); paste each built file into the n8n node of the same name. The live copy is in n8n; edit the prompts in the n8n node « Consignes de l'assistant ».
+- `supabase/`: the table, the status function, the `resume` column used for list titles and the « detailing » status (all already applied).
 
 ## Setup
 
@@ -45,7 +48,7 @@ paused while the tab is hidden, and calls n8n « get » only once more, when the
 
 ### 3. First use
 
-Open the site, enter the access code (the « Glossaire » page, with every term and a one-line explanation, works without it) and your first name, then « Nouvelle séance »: describe the lesson in the text box or click the tokens (principe, technique, attaque, public, durée…). Defaults: 5e à 1er kyu, adultes, 30 minutes. A lesson takes about 4 to 8 minutes; there is no need to stay on the page, it appears in « Mes séances » when ready.
+Open the site, enter the access code (the « Glossaire » page, with every term and a one-line explanation, works without it) and your first name, then « Nouvelle séance »: describe the lesson in the text box or click the tokens (principe, technique, attaque, public, durée…). Defaults: 5e à 1er kyu, adultes, 30 minutes. A lesson takes about 1 to 3 minutes; detailed instructions for one exercise about 1 to 2 minutes. There is no need to stay on the page.
 
 ## Notes
 
@@ -53,7 +56,8 @@ Open the site, enter the access code (the « Glossaire » page, with every term 
 - A lesson with no news for 30 minutes (the n8n run limit) is shown as « Interrompue », with a button to start it again.
 - The access code is checked by n8n, not by the page. To change it, edit the credential value; everyone then re-enters the new code once.
 - nginx forwards only `/api/carnet-seances`; no other n8n webhook is reachable through this site.
-- The automatic review notes are stored in `data.relecture` in Supabase for control; they are not shown in the app.
+- Lessons show, for each exercise, the template and two notes (Uke's role, what the teacher should watch). « Consignes détaillées » under an exercise (or « … de toutes les situations » at the bottom) asks for the foot-by-foot instructions; only those are reviewed for spatial consistency. The review notes are stored in `data.relecture` for control; they are not shown in the app.
+- Older lessons that already have detailed instructions display as before.
 - « Importer » (on « Mes séances ») adds a lesson from its JSON: pasted (a block from the Claude Project, with or without the ``` fences) or a .json file. n8n checks it with the same rules as generated lessons; it is not re-reviewed by Sonnet. « Copier le JSON » on a lesson gives the same format back.
 - Each revision keeps the previous version in `versions` (last 10), not yet shown in the app.
 - Placements are checked twice by the models, but stay a proposal: they must be validated on the mat by a teacher.

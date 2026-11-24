@@ -29,7 +29,7 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
 .lessons .m{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-top:auto;padding-top:4px}
 .pill{font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .pill.ready{background:var(--p3-soft);color:var(--p3)}
-.pill.generating,.pill.reviewing{background:var(--p1-soft);color:var(--p1)}
+.pill.generating,.pill.reviewing,.pill.detailing{background:var(--p1-soft);color:var(--p1)}
 .pill.error{background:var(--p2-soft);color:var(--warn)}
 
 /* new lesson: chat-like request + tokens */
@@ -128,10 +128,16 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
 .lesson{display:flex;flex-direction:column;gap:36px}
 .lesson:empty{display:none}
 .modify{display:flex;flex-direction:column;gap:6px}
+.detail-slot{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;border-top:1px dashed var(--line);padding-top:12px}
+.detail-btn{font-size:13.5px}
+.detail-wait{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--muted)}
+.mini-spin{flex:none;width:16px;height:16px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--accent);animation:spin 1s linear infinite}
+@media (prefers-reduced-motion: reduce){.mini-spin{animation:none;border-right-color:var(--accent)}}
+.detail-msg{margin:4px 0 0;font-size:13.5px;color:var(--warn)}
 .secondary-actions{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}
 
 @media print{
-  .bar,.modify,.progress,.error-card,.gloss-tools{display:none!important}
+  .bar,.modify,.progress,.error-card,.gloss-tools,.detail-slot{display:none!important}
   .gl{break-inside:avoid}
   body{background:#fff}
 }

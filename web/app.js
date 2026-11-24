@@ -54,7 +54,8 @@ async function statut(id){
   const rows = await res.json();
   return Array.isArray(rows) && rows.length ? rows[0] : null;
 }
-const isBusy = st => st === "generating" || st === "reviewing";
+const isBusy = st => st === "generating" || st === "reviewing" || st === "detailing";
+const isWriting = st => st === "generating" || st === "reviewing";
 
 /* ---------- views ---------- */
 const $ = id => document.getElementById(id);
@@ -106,7 +107,7 @@ $("formAcces").addEventListener("submit", async e => {
 });
 
 /* ---------- list ---------- */
-const STATUS = { generating: "En rédaction", reviewing: "En vérification", ready: "Prête", error: "Erreur", stale: "Interrompue" };
+const STATUS = { generating: "En rédaction", reviewing: "En vérification", detailing: "Consignes en cours", ready: "Prête", error: "Erreur", stale: "Interrompue" };
 const listStatus = s => isBusy(s.status) && Date.now() - new Date(s.updated_at) > STALE_S * 1000 ? "stale" : s.status;
 const fmtDate = s => { const d = new Date(s); return isNaN(d) ? "" : d.toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }); };
 
@@ -316,19 +317,71 @@ function setProgress(status, step){
 }
 function tickClock(){
   const t = Math.max(0, Math.floor((Date.now() - startedAt) / 1000));
-  $("progressClock").textContent = `${Math.floor(t / 60)} min ${String(t % 60).padStart(2, "0")} s`;
+  const txt = `${Math.floor(t / 60)} min ${String(t % 60).padStart(2, "0")} s`;
+  $("progressClock").textContent = txt;
+  document.querySelectorAll("[data-clock]").forEach(el => { el.textContent = txt; });
 }
 
 function paint(r){
   row = r;
-  const busy = r.status === "generating" || r.status === "reviewing";
+  const busy = isWriting(r.status);
   $("errorCard").hidden = r.status !== "error";
   if (r.status === "error") $("errorText").textContent = r.error || "Erreur inconnue.";
   $("btnRelancer").hidden = !!r.data;
   if (busy) setProgress(r.status, r.step); else $("progress").hidden = true;
-  if (r.data && !busy){ render(r.data, false); $("modifyCard").hidden = false; }
+  if (r.data && !busy){ render(r.data, false); $("modifyCard").hidden = false; fillDetails(r); }
   else { $("lesson").innerHTML = ""; $("modifyCard").hidden = true; document.title = (r.theme || "Séance") + " · Carnet de séances"; }
 }
+
+/* ---------- detailed instructions, on request ---------- */
+// Each exercise's right-hand column ends with an empty slot (carnet.js): it gets the
+// « Consignes détaillées » button, or a waiting line while they are being written.
+const detailTargets = r => r.status === "detailing" ? String(r.step || "").replace(/^[^·]*·/, "").split(",").map(n => parseInt(n, 10) - 1).filter(n => n >= 0) : [];
+const needsDetails = s => !(Array.isArray(s.consignes) && s.consignes.length);
+function fillDetails(r){
+  const sits = (r.data && r.data.situations) || [];
+  const detailing = r.status === "detailing", targets = detailTargets(r);
+  document.querySelectorAll("#lesson .detail-slot").forEach(slot => {
+    const i = +slot.dataset.ex, s = sits[i];
+    if (!s) return;
+    if (detailing && targets.includes(i)){
+      slot.innerHTML = `<div class="detail-wait" role="status"><span class="mini-spin" aria-hidden="true"></span><span>Rédaction des consignes détaillées, puis vérification spatiale… <span class="clock" data-clock></span></span></div>`;
+    } else if (needsDetails(s)){
+      slot.innerHTML = `<button class="btn detail-btn" type="button" data-ex="${i}"${detailing ? " disabled" : ""}>Consignes détaillées</button><span class="hint">Placements pied par pied et vérification spatiale · 1 à 2 min</span>`;
+    } else slot.innerHTML = "";
+  });
+  const missing = sits.map((s, i) => needsDetails(s) ? i : -1).filter(i => i >= 0);
+  const all = $("btnToutDetailler");
+  all.hidden = missing.length < 2;
+  all.disabled = detailing;
+  $("formModifier").querySelector("button[type=submit]").disabled = detailing;
+  const msg = $("detailMsg");
+  msg.hidden = !(r.error && r.status === "ready");
+  msg.textContent = r.error && r.status === "ready" ? r.error : "";
+  tickClock();
+}
+async function requestDetails(indexes){
+  if (!row || !indexes.length) return;
+  $("detailMsg").hidden = true;
+  try {
+    const r = await api("detail", { id: row.id, situations: indexes });
+    startedAt = Date.now();
+    paint({ ...row, status: "detailing", step: r.step || ("Consignes détaillées · " + indexes.map(i => i + 1).join(", ")), error: null });
+    clearTimeout(pollTimer);
+    waitFor(row.id, pollToken);
+  } catch (e){
+    if (e instanceof AuthError) return fail(e);
+    $("detailMsg").hidden = false; $("detailMsg").textContent = e.message;
+  }
+}
+$("lesson").addEventListener("click", e => {
+  const b = e.target.closest(".detail-btn"); if (!b || b.disabled) return;
+  requestDetails([+b.dataset.ex]);
+});
+$("btnToutDetailler").addEventListener("click", () => {
+  if (!row || !row.data) return;
+  requestDetails(row.data.situations.map((s, i) => needsDetails(s) ? i : -1).filter(i => i >= 0));
+});
 
 async function showLesson(id){
   show("seance");
@@ -353,7 +406,7 @@ async function showLesson(id){
 function waitFor(id, token){
   let first = true;
   clearInterval(clockTimer);
-  clockTimer = setInterval(() => { if (token === pollToken && !$("progress").hidden) tickClock(); }, 1000);
+  clockTimer = setInterval(() => { if (token === pollToken && (!$("progress").hidden || document.querySelector("[data-clock]"))) tickClock(); }, 1000);
   const later = ms => { clearTimeout(pollTimer); pollTimer = setTimeout(check, ms); };
   const finish = async () => {
     const r = await api("get", { id });
@@ -370,7 +423,10 @@ function waitFor(id, token){
       if (s && isBusy(s.status)){
         if (first){ startedAt = Date.now() - (s.age_s || 0) * 1000; first = false; }
         if (s.age_s > STALE_S) return interrupted();
-        if (s.status !== row.status || s.step !== row.step){ row.status = s.status; row.step = s.step; setProgress(s.status, s.step); }
+        if (s.status !== row.status || s.step !== row.step){
+          row.status = s.status; row.step = s.step;
+          if (isWriting(s.status)) setProgress(s.status, s.step); else fillDetails(row);
+        }
         return later(POLL_MS);
       }
       await finish();                       // ready, error or deleted
@@ -386,6 +442,7 @@ document.addEventListener("visibilitychange", () => { if (!document.hidden && re
 
 function interrupted(){
   clearInterval(clockTimer);
+  if (row.status === "detailing") return paint({ ...row, status: "ready", error: "Les consignes détaillées n'ont pas abouti (aucune nouvelle depuis plus de 30 minutes). Vous pouvez les redemander." });
   paint({ ...row, status: "error", error: row.data
     ? "La modification n'a pas abouti (aucune nouvelle depuis plus de 30 minutes). Voici la version précédente ; vous pouvez redemander la modification."
     : "La rédaction semble interrompue : aucune nouvelle depuis plus de 30 minutes. Relancez la demande." });

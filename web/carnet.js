@@ -219,8 +219,10 @@ function checks(d){
   d.situations.forEach((x,i)=>{
     if (!Array.isArray(x.phases) || !x.phases.length || x.phases.some(p=>![1,2,3].includes(p))) w.push(`Situation ${i+1} : phases manquantes ou invalides (attendu 1, 2 ou 3).`);
     if (!x.gabarit) w.push(`Situation ${i+1} : gabarit manquant.`);
-    if (!Array.isArray(x.consignes) || !x.consignes.length) w.push(`Situation ${i+1} : consignes détaillées manquantes.`);
-    if (!Array.isArray(x.verification) || !x.verification.length) w.push(`Situation ${i+1} : vérification spatiale manquante.`);
+    const hasNotes = x.notes && x.notes.uke && x.notes.enseignant;
+    const hasConsignes = Array.isArray(x.consignes) && x.consignes.length;
+    if (!hasNotes && !hasConsignes) w.push(`Situation ${i+1} : notes pour Uke et pour l'enseignant manquantes.`);
+    if (hasConsignes && (!Array.isArray(x.verification) || !x.verification.length)) w.push(`Situation ${i+1} : vérification spatiale manquante.`);
   });
   if (!d.public) w.push("Le public (grades ou niveaux) n'est pas précisé.");
   return w;
@@ -318,13 +320,25 @@ function render(d, isExample){
           <span class="eyebrow">Gabarit de situation</span>
           <table class="tpl"><tbody>${tpl(g).map(([k,v])=>`<tr><th>${k}</th><td>${esc(v||"—")}</td></tr>`).join("")}</tbody></table>
         </section>
-        <section>
-          <span class="eyebrow">Consignes détaillées</span>
-          <ol class="steps">${(x.consignes||[]).map(c=>`<li><span><b>${esc(c.titre)}</b> : ${esc(c.texte)}</span></li>`).join("")}</ol>
-          <div class="check">
-            <span class="eyebrow">Vérification spatiale</span>
-            <ul>${(x.verification||[]).map(v=>{ const ok = v.statut==="ok"; return `<li class="${ok?"ok":"warn"}"><span class="ico">${ok?"✓":"⚠"}</span><span>${esc(v.texte)}${ok?"":' <span class="mat">à vérifier sur le tapis</span>'}</span></li>`; }).join("")}</ul>
-          </div>
+        <section class="ex-side">${(()=>{
+          // Right-hand column: notes for Uke and the teacher; detailed instructions only when
+          // they were asked for. Older lessons may have instructions and no notes.
+          const n = x.notes || {}; const cs = Array.isArray(x.consignes) ? x.consignes : []; const vs = Array.isArray(x.verification) ? x.verification : [];
+          const notes = (n.uke || n.enseignant) ? `<div class="notes">
+            <span class="eyebrow">À retenir</span>
+            <dl>${n.uke?`<dt>Rôle d'Uke</dt><dd>${esc(n.uke)}</dd>`:""}${n.enseignant?`<dt>À observer</dt><dd>${esc(n.enseignant)}</dd>`:""}</dl>
+          </div>` : "";
+          const details = cs.length ? `<div class="details">
+            <span class="eyebrow">Consignes détaillées</span>
+            <ol class="steps">${cs.map(c=>`<li><span><b>${esc(c.titre)}</b> : ${esc(c.texte)}</span></li>`).join("")}</ol>
+            ${vs.length?`<div class="check">
+              <span class="eyebrow">Vérification spatiale</span>
+              <ul>${vs.map(v=>{ const ok = v.statut==="ok"; return `<li class="${ok?"ok":"warn"}"><span class="ico">${ok?"✓":"⚠"}</span><span>${esc(v.texte)}${ok?"":' <span class="mat">à vérifier sur le tapis</span>'}</span></li>`; }).join("")}</ul>
+            </div>`:""}
+          </div>` : "";
+          const redo = (!cs.length && x.aRedetailler) ? `<p class="redo">Situation modifiée : ses consignes détaillées sont à redemander.</p>` : "";
+          return notes + details + redo + `<div class="detail-slot" data-ex="${i}"></div>`;
+        })()}
         </section>
       </div>
     </article>`;

@@ -95,6 +95,15 @@ ol.steps li{counter-increment:s;display:grid;grid-template-columns:26px 1fr;gap:
 ol.steps li::before{content:counter(s);font-family:var(--f-mono);font-size:12px;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--accent);color:var(--accent);display:grid;place-items:center;margin-top:1px}
 ol.steps b{font-weight:600}
 .check{border-top:1px dashed var(--line);padding-top:12px;display:flex;flex-direction:column;gap:6px}
+.notes{display:flex;flex-direction:column;gap:8px}
+.notes dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:8px 12px;font-size:14px;line-height:1.5}
+.notes dt{font-weight:600;color:var(--muted);font-size:13px;padding-top:1px}
+.notes dd{margin:0}
+@media (max-width:480px){.notes dl{grid-template-columns:1fr;gap:2px}.notes dd{margin-bottom:6px}}
+.details{display:flex;flex-direction:column;gap:12px}
+.notes + .details{border-top:1px solid var(--line);padding-top:14px}
+.redo{margin:0;font-size:13px;color:var(--warn);border-top:1px dashed var(--line);padding-top:10px}
+.detail-slot:empty{display:none}
 .check ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:13.5px}
 .check li{display:grid;grid-template-columns:20px 1fr;gap:6px}
 .check li .ico{font-weight:700}
