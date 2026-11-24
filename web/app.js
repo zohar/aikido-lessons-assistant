@@ -122,10 +122,49 @@ async function showList(){
     $("listeStatus").hidden = true;
     $("lessons").innerHTML = items.map(s => `<li><a href="#seance/${esc(s.id)}">
       <span class="t">${esc(s.theme || "Sans titre")}</span>
+      ${(() => { const r = lessonSummary(s.resume, s.theme); return r ? `<span class="r">${esc(r)}</span>` : ""; })()}
       <span class="p">${esc(s.public || "")}</span>
       <span class="m"><span>${fmtDate(s.updated_at)}${s.author ? " · " + esc(s.author) : ""}</span><span class="pill ${esc(listStatus(s))}">${STATUS[listStatus(s)] || esc(s.status)}</span></span>
     </a></li>`).join("");
   } catch (e){ fail(e, $("listeStatus")); }
+}
+
+// "Iriminage · Kotegaeshi — Shomen Uchi": the official technique and attack names found
+// in a lesson's exercises (column « resume », computed by Supabase), so lessons on the
+// same theme can be told apart. Free text such as « phase de placement » is ignored.
+let summaryRe = null;
+const summaryName = {}, summaryCat = {};
+const summaryKey = t => String(t).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z]/g, "");
+const SUMMARY_SAME = { "Morote Dori": "Katate Ryote Dori" };
+// Official technique names that the glossary files under a shorter entry: shown in full.
+const SUMMARY_FULL = ["Uchikaiten Sankyo", "Sotokaiten Sankyo", "Uchi Kaitennage", "Soto Kaitennage"];
+function lessonSummary(resume, theme){
+  if (!resume) return "";
+  if (!summaryRe){
+    const add = (name, canon, cat) => { summaryName[summaryKey(name)] = canon; summaryCat[canon] = cat; };
+    const catOf = {};
+    glossEntries.forEach(e => { if (e.cat === "technique" || e.cat === "attaque") catOf[e.term] = e.cat; });
+    Object.entries(catOf).forEach(([t, c]) => add(t, SUMMARY_SAME[t] || t, c));
+    Object.entries(ALIAS).forEach(([a, k]) => { if (catOf[k]) add(a, SUMMARY_SAME[k] || k, catOf[k]); });
+    SUMMARY_FULL.forEach(n => add(n, n, "technique"));
+    // Each name as its letters, with optional spaces or hyphens anywhere between them, longest first.
+    const pats = [...new Set(Object.keys(summaryCat).concat(Object.keys(ALIAS).filter(a => catOf[ALIAS[a]])))]
+      .map(n => n.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase())
+      .sort((a, b) => b.length - a.length)
+      .map(n => n.replace(/[^a-z]/g, "").split("").join("[\\s-]*"));
+    summaryRe = new RegExp(`(?<![a-z])(${[...new Set(pats)].join("|")})(?![a-z])`, "g");
+  }
+  const text = resume.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const themeKey = summaryKey(theme || ""), themeName = summaryName[themeKey];
+  const seen = new Set(), tech = [], att = [];
+  for (const m of text.matchAll(summaryRe)){
+    const name = summaryName[summaryKey(m[1])];
+    if (!name || seen.has(name) || summaryKey(name) === themeKey || name === themeName) continue;
+    seen.add(name);
+    (summaryCat[name] === "technique" ? tech : att).push(name);
+  }
+  const t = tech.length > 4 ? tech.slice(0, 4).join(" · ") + ` +${tech.length - 4}` : tech.join(" · ");
+  return [t, att.slice(0, 3).join(", ")].filter(Boolean).join(" — ");
 }
 
 /* ---------- new lesson ---------- */

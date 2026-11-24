@@ -24,7 +24,7 @@ paused while the tab is hidden, and calls n8n « get » only once more, when the
 - `web/`: the app (static HTML/CSS/JS, no build step). `carnet.js` holds the lesson rendering and glossary; `app.js` the screens.
 - `deploy/`: nginx config template; `Dockerfile`: the container Coolify builds.
 - `n8n/`: sources of the n8n workflow (prompts, validation code incl. `valider-import.js`, generator). The live copy is in n8n; edit the prompts in the n8n node « Consignes de l'assistant ».
-- `supabase/`: the table and the status function (both already applied).
+- `supabase/`: the table, the status function and the `resume` column used for list titles (all already applied).
 
 ## Setup
 
