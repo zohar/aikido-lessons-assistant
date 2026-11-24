@@ -84,6 +84,7 @@ const G0 = {
   "Kata Dori Men Uchi":["肩取り面打ち","kata dori men uchi","Saisie à l'épaule suivie d'une frappe à la tête."],
   "Shomen Uchi":["正面打ち","shōmen uchi","Frappe verticale descendante au sommet de la tête."],
   "Yokomen Uchi":["横面打ち","yokomen uchi","Frappe circulaire au côté de la tête."],
+  "Tsuki":["突き","tsuki","Coup de poing direct : Chudan Tsuki (au ventre) ou Jodan Tsuki (au visage)."],
   "Chudan Tsuki":["中段突き","chūdan tsuki","Coup de poing direct au ventre."],
   "Jodan Tsuki":["上段突き","jōdan tsuki","Coup de poing direct au visage."],
   "Ushiro Eri Dori":["後ろ襟取り","ushiro eri dori","Saisie du col par derrière."],
@@ -110,7 +111,7 @@ const G0 = {
   "Ushiro Kiriotoshi":["後ろ切り落とし","ushiro kiri otoshi","Projection vers l'arrière en coupant au niveau des épaules."],
   "Udekimenage":["腕極め投げ","ude kime nage","Projection en contrôlant le bras tendu au niveau du coude."],
   "Jujigarami":["十字絡み","jūji garami","Projection en croisant les bras d'Uke."],
-  "Sumiotoshi":["隅落とし","sumi otoshi","Projection « dans le coin », vers l'angle mort d'Uke."],
+  "Sumiotoshi":["隅落とし","sumi otoshi","Projection sur le côté en balayant la jambe."],
   "Kokyunage":["呼吸投げ","kokyū nage","Projection par le rythme et le déséquilibre, sans clé articulaire."],
   "Kokyuho":["呼吸法","kokyūhō","Exercice de respiration et de coordination, souvent à genoux sur Ryote Dori, qui travaille le déséquilibre par le centre."],
   "Hijikimeosae":["肘極め押さえ","hiji kime osae","Immobilisation par contrôle du coude."],
@@ -145,6 +146,10 @@ const ALIAS = {
   "Sokumen Iriminage":"Iriminage Sokumen","Sokumen":"Iriminage Sokumen","Irimi Sokumen":"Iriminage Sokumen",
   "Uchi Kaiten":"Uchikaiten","Soto Kaiten":"Sotokaiten","Uchikaiten Sankyo":"Uchikaiten","Sotokaiten Sankyo":"Sotokaiten",
   "Uchi Kaitennage":"Kaitennage","Soto Kaitennage":"Kaitennage",
+  "Ushiro Katadori":"Ushiro Ryokata Dori","Ushiro Ryo Katadori":"Ushiro Ryokata Dori","Ushiro Ryokatadori":"Ushiro Ryokata Dori","Ryo Kata Dori":"Ryokata Dori","Ryokatadori":"Ryokata Dori",
+  "Ushiro Katatedori Kubishime":"Ushiro Katate Dori Kubishime","Katatedori":"Katate Dori","Ryotedori":"Ryote Dori","Katadori Men Uchi":"Kata Dori Men Uchi",
+  "Tantodori":"Tanto Dori","Jodori":"Jo Dori","Tachidori":"Tachi Dori","Jonagewaza":"Jo Nage Waza","Hanmihandachi":"Hanmihandachiwaza",
+  "Uchikaiten Nage":"Kaitennage","Sotokaiten Nage":"Kaitennage","Uchikaitennage":"Kaitennage","Ki-musubi":"Kimusubi","Ki Musubi":"Kimusubi","Jyu-Waza":"Jyuwaza",
   "kyu":"Kyu","dan":"Dan","Dan":"Dan"
 };
 let G = {};
